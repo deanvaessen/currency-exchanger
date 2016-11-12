@@ -14,6 +14,7 @@ require('./CurrencyExchange.scss');
 import React from 'react';
 import Formous from 'formous';
 import handle from './componentSupport/handle';
+import communicator from './componentSupport/communicator';
 import helpers from './../../helpers/index';
 
 /**
@@ -41,24 +42,56 @@ class CurrencyExchange extends React.Component {
 			this.handleKeyUp = handle.keyUp.bind(this);
 			this.mutateComponent = this.mutateComponent.bind(this);
 			this.onChangeDropdown = handle.onChangeDropdown.bind(this);
-			this.doEvent = handle.mockEvent.bind(this);
+			this.mapCurrencies = this.mapCurrencies.bind(this);
+			this.mockEvent = handle.mockEvent.bind(this);
 
 		// Vars
 		this.shouldHideWrittenOutcome = true;
 
 		// State
 		this.state = {
-			selectCurrencyA : 'EUR',
-			selectCurrencyB : 'EUR',
+			selectCurrencyA : 'USD',
+			selectCurrencyB : 'USD',
 			leadingCurrency : '',
+			currencyList : [],
 			resultCurrencyExchange : '', //remove this one
 			resultCurrencyExchangeA : '',
 			resultCurrencyExchangeB : '',
-			shouldHideWrittenOutcome : true
+			shouldHideWrittenOutcome : true,
+			result : {
+				leadingCurrency : '',
+				leadingCurrencyValue : '',
+				followingCurrency : '',
+				followingCurrencyValue : ''
+			}
 		};
 	}
 
 	componentWillMount() {
+		// Get all the curencies and rates
+		communicator.getCurrenciesAndRates(result => {
+			console.log(result);
+			let currencyArray = [];
+
+			const XMLArrayToday = result['gesmes:Envelope'].Cube.Cube[0].Cube;
+
+			// Unpack the ugly array that I get back and make my own
+			XMLArrayToday.forEach(function (item, index){
+				const currencyAndRate = {
+					currency : item['@attributes'].currency,
+					rate : item['@attributes'].rate
+				};
+
+				currencyArray.push(currencyAndRate);
+				currencyArray.push({
+					currency : 'EUR',
+					rate : 1
+				});
+			});
+
+			// Update the state so the app knows the currencies
+			this.setState({currencyList : currencyArray});
+		});
 	}
 
 	componentDidMount() {
@@ -67,7 +100,11 @@ class CurrencyExchange extends React.Component {
 	componentWillReceiveProps(nextProps) {
 	}
 
-	mutateComponent(payload){
+	mapCurrencies(currency){
+		return <option>{currency.currency}</option>;
+	}
+
+	mutateComponent(payload, stateObject){
 		console.log('CurrencyExchange receives result:');
 		console.log(payload);
 
@@ -75,15 +112,19 @@ class CurrencyExchange extends React.Component {
 		this.shouldHideWrittenOutcome = false;
 
 		// Define the view data
-		const messageContent = payload.messageContent,
-			writePath = payload.writePath;
+		const leadingCurrency = payload.leadingCurrency.currency,
+			leadingCurrencyAmount = payload.leadingCurrency.amount,
+			followingCurrency = payload.followingCurrency.currency,
+			followingCurrencyAmount = payload.followingCurrency.amount;
 
 		// Pass back into the view
-		this.setState(this.props.fields.resultCurrencyExchange = {
-			value : messageContent,
-			writePath : writePath,
-			events : this.props.fields.resultCurrencyExchange.events,
-			valid : this.props.fields.resultCurrencyExchange.valid
+		this.setState({
+			result : {
+				leadingCurrency : leadingCurrency,
+				leadingCurrencyAmount : leadingCurrencyAmount,
+				followingCurrency : followingCurrency,
+				followingCurrencyAmount : followingCurrencyAmount
+			}
 		});
 	}
 
@@ -123,8 +164,7 @@ class CurrencyExchange extends React.Component {
 														onChange={this.onChangeDropdown.bind(this, 'selectCurrencyA')}
 														onMouseUp={formSubmit(this.handleSubmit)}
 													>
-														<option value="EUR">Euro</option>
-														<option value="USD">US Dollar</option>
+														{this.state.currencyList.map(this.mapCurrencies)}
 													</select>
 												</div>
 
@@ -143,7 +183,7 @@ class CurrencyExchange extends React.Component {
 															const leadingRecorder = document.getElementById(elID);
 
 															leadingRecorder.value = 'currencyA';
-															this.doEvent(leadingRecorder, 'input');
+															this.mockEvent(leadingRecorder, 'input');
 														}}
 														onKeyUp={
 															formSubmit(this.handleSubmit)
@@ -168,8 +208,7 @@ class CurrencyExchange extends React.Component {
 														value={this.state.selectCurrencyB}
 														onChange={this.onChangeDropdown.bind(this, 'selectCurrencyB')}
 													>
-														<option value="EUR">Euro</option>
-														<option value="USD">US Dollar</option>
+														{this.state.currencyList.map(this.mapCurrencies)}
 													</select>
 												</div>
 
@@ -189,7 +228,7 @@ class CurrencyExchange extends React.Component {
 															const leadingRecorder = document.getElementById(elID);
 
 															leadingRecorder.value = 'currencyB';
-															this.doEvent(leadingRecorder, 'input');
+															this.mockEvent(leadingRecorder, 'input');
 														}}
 														onKeyUp={
 															formSubmit(this.handleSubmit)
@@ -215,15 +254,16 @@ class CurrencyExchange extends React.Component {
 
 							<div className={this.shouldHideWrittenOutcome ? 'hidden' : 'CurrencyExchange__resultCurrencyExchange'}>
 								<h4 className={this.shouldHideWrittenOutcome ? 'hidden header' : 'header'}>
-									Your logged exchange rate:
+									Your exchange conversion:
 								</h4>
 								<br />
 
 								<p className='CurrencyExchange__outputresultCurrencyExchange'>
-									this.props.fields.resultCurrencyExchange.value
-									<br />
-									<br />
-									1 Hungarian Forint equals 0.0035 US Dollar
+									{this.state.result.leadingCurrencyAmount} {this.state.result.leadingCurrency}
+									&nbsp;
+									equals
+									&nbsp;
+									{this.state.result.followingCurrencyAmount} {this.state.result.followingCurrency}
 								</p>
 
 								<div className={this.shouldHideWrittenOutcome ? 'hidden' : 'CurrencyExchange__resultCurrencyExchange'}>

@@ -45,7 +45,9 @@ let exposed = new class {
 			followingCurrencyValue = (leadingCurrencySelector === 'valueCurrencyA' ? fields.currencyB.value : fields.currencyA.value);
 
 			let leadingCurrencyFiltered,
-			followingCurrencyFiltered;
+			followingCurrencyFiltered,
+			leadingCurrencyRate,
+			followingCurrencyRate;
 
 			leadingCurrencyFiltered = helpers.mutate.typography.removeWhitespace(leadingCurrencyValue);
 			leadingCurrencyFiltered = helpers.mutate.typography.replaceCommaWithDot(leadingCurrencyValue);
@@ -65,6 +67,18 @@ let exposed = new class {
 
 		// No errors found, continue.
 
+		// Find the appropriate rates
+
+		this.state.currencyList.forEach((item, index) => {
+			if (item.currency == leadingCurrency){
+				leadingCurrencyRate = item.rate;
+			}
+
+			if (item.currency == followingCurrency){
+				followingCurrencyRate = item.rate;
+			}
+		});
+
 		// Define an exchange request
 		// Only 1 currency can be 'leading', that is to say;
 			// If I input '20usd' then it should calculate this number to the OTHER currency still select it
@@ -73,11 +87,13 @@ let exposed = new class {
 			const exchangeObject = {
 				leadingCurrency : {
 					currency : leadingCurrency,
-					value : leadingCurrencyFiltered
+					amount : parseFloat(leadingCurrencyFiltered),
+					rate : parseFloat(leadingCurrencyRate)
 				},
 				followingCurrency : {
 					currency : followingCurrency,
-					value : followingCurrencyFiltered
+					amount : parseFloat(followingCurrencyFiltered),
+					rate : parseFloat(followingCurrencyRate)
 				}
 			};
 

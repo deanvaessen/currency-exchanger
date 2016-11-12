@@ -9,6 +9,8 @@
 import MutationHelpers from './functions/mutation';
 import ValidationHelpers from './functions/validation';
 import CommunicationHelpers from './functions/communication';
+import ConversionHelpers from './functions/conversion';
+import ExchangeHelpers from './functions/exchange';
 
 /**
 * { Function }
@@ -56,15 +58,31 @@ const index = (function () {
 			};
 
 			const communicate = {
-				ajax : function (input){
-					return CommunicationHelpers.ajax(input);
+				ajax : {
+					get : function (url, callback){
+						return CommunicationHelpers.ajax.get(url, callback);
+					}
 				}
+			};
+
+			const convert = {
+				xml : {
+					toJSON : function (input){
+						return ConversionHelpers.xml.toJSON(input);
+					}
+				}
+			};
+
+			const exchange = function (input, callback){
+				return ExchangeHelpers(input, callback);
 			};
 
 			return {
 				mutate : mutate,
 				validate : validate,
-				communicate : communicate
+				communicate : communicate,
+				convert : convert,
+				exchange : exchange
 			};
 })();
 
