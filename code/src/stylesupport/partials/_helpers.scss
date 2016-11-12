@@ -1,0 +1,54 @@
+/* ==========================================================================
+	 Helper classes
+	 ========================================================================== */
+
+/*
+ * Hidden
+ */
+
+.hidden {
+		display: none !important;
+		visibility: hidden;
+}
+
+/*
+ * Positioning
+*/
+
+.centre{
+	position: relative;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.h-centre{
+	position: relative;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.v-centre{
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+/*height: 250px;
+width: 250px;
+position: relative;
+left: calc(50% – 125px);*/
+
+/* .align {
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+margin: auto;
+width: 200px;
+height: 200px;
+} */
+
+
+

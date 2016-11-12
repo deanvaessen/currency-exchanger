@@ -1,0 +1,20 @@
+/*******************************
+ * [_readingelements.scss]
+ * Misc. elements like dividers
+ ******************************/
+
+.e-seperator-depressed {
+	margin: 25px 0 26px;
+	height: 0;
+	clear: both;
+	border: solid #ddd;
+	border-width: 1px 0 0;
+
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #fff;
+}
+
+.e-well-default {
+	border-top: 1px solid #ddd;
+}
+

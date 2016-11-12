@@ -1,0 +1,44 @@
+/*******************************
+ * [_app.scss]
+ * Define the base styling here
+ ******************************/
+
+/**
+ * { Dependencies }
+ */
+
+	// Shared styling
+	@import './../../stylesupport/index.scss';
+	@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
+/**
+* { Styles }
+*/
+
+body {
+	color: #262626;
+	background: #222;
+	font-size: 100%; //62.5%
+	background-color: lightblue;
+	font-family: 'Open Sans Regular', sans-serif;
+
+	h1 {
+		font-size: 235%;
+	}
+
+	h2 {
+		font-size: 130%;
+	}
+
+	h3 {
+		font-size: 120%;
+	}
+
+	h4 {
+		font-size: 110%;
+	}
+
+	h5 {
+		font-size: 100%;
+	}
+}

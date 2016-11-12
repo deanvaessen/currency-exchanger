@@ -1,0 +1,220 @@
+/*******************************
+ * [_CurrencyExchange.scss]
+ * Define the CurrencyExchange styling here
+ ******************************/
+
+/**
+ * { Dependencies }
+ */
+	// Shared styling
+	@import './../../stylesupport/index.scss';
+
+ /**
+  * { Styles }
+  */
+.CurrencyExchange__outerContainer{
+		margin: 10% auto;
+		@include rem(width, 650px)
+		box-shadow: 0px 1px 6px 1px rgba(0,0,0,0.4);
+		border-radius: 0% 0% 4% 4%;
+
+	.CurrencyExchange__title {
+		text-align: center;
+		@include rem(padding, 20px 20px);
+		text-shadow:2px 1px 5px #696868;
+		background: $rgb-currencyexchanger-orange;
+		color: white;
+	}
+
+	.CurrencyExchange__innerContainer {
+		background: #fffcf6;
+		@include rem(padding, 10px 35px 35px 35px);
+		border-radius: 0% 0% 4% 4%;
+
+		hr {
+			@extend .e-seperator-depressed;
+		}
+
+		.CurrencyExchange__input {
+			position: relative;
+			margin: 10% auto;
+			width: 100%;
+
+			.header:first-of-type{
+				text-align: center;
+			}
+
+			input {
+				@include rem(padding, 10px);
+				@include rem(margin, 5px 0px 5px 0);
+				border: 2px solid #EBE9E9;
+				background-color: #F6F6F6;
+				color: black;
+				border-radius: 4px;
+				@include rem(height, 40px);
+				width: 100%;
+				box-sizing: border-box;
+				box-shadow:
+				  inset 0 0 5px  rgba(0,0,0,0.1),
+				        0 0 0px rgba(0,0,0,0.1);
+			}
+
+			.header, .subheader {
+				text-shadow:0px 1px 20px lightgrey;
+				@include rem(margin, 10px 0);
+				@include rem(letter-spacing,0.5px);
+			}
+
+			.CurrencyExchange__optionsContainer {
+				display: inline-block;
+				position: relative;
+				left: 50%;
+				transform: translateX(-50%);
+
+				.CurrencyExchange__currencyOption {
+					display: inline-block;
+					@include rem(margin, 0 20px);
+				}
+
+				.CurrencyExchange__valueDropDown {
+					display: block;
+					@include rem(margin, 0 auto);
+
+					select {
+						@include rem(margin, 10px auto);
+						display: block;
+					}
+				}
+
+				.CurrencyExchange__currencyAmount {
+					display: inline-block;
+					@include rem(margin, 0 20px);
+				}
+			}
+
+
+			.CurrencyExchange__LevelAndOutput{
+				@include rem(margin, 20px 0);
+				display: inline-block;
+				width: 100%;
+
+				.arrow {
+
+				}
+
+				.arrow:after{
+
+				}
+
+				.CurrencyExchange__logLevel, .CurrencyExchange__logOutput {
+					width: 50%;
+					float: left;
+				}
+
+				.CurrencyExchange__logOutput:after{
+					content: '<--->';
+					position: absolute;
+					left: 50%;
+					transform: translateX(-50%);
+					top: 49%;
+				}
+
+				.header {
+					text-align: center;
+				}
+
+					input {
+						box-shadow: none;
+						margin: 0 auto;
+						display: block;
+						width: auto;
+					}
+			}
+
+			.CurrencyExchange__logLocation {
+				@include rem(margin, 30px 0 0 0);
+				width: 100%;
+				float: left;
+
+				.CurrencyExchange__optionsContainer {
+					@include rem(margin, 0 0 20px 0);
+				}
+
+				input[type=text] {
+					@include rem(margin, 20px auto);
+					width: 80%;
+				}
+			}
+
+			.CurrencyExchange__streamNotice {
+				@include rem(margin, 30px 0 0 0);
+				width: 100%;
+				float: left;
+			}
+
+			.CurrencyExchange__loggedMessageDebug {
+				color: gray;
+			}
+
+			.CurrencyExchange__loggedMessageInfo {
+				color: green;
+			}
+
+			.CurrencyExchange__loggedMessageError{
+				color: red;
+			}
+
+			.CurrencyExchange__resultCurrencyExchange {
+				@include rem(margin, 30px 0 40px 0);
+
+				header, p {
+					display: inline-block;
+				}
+				p{
+					@include rem(margin, 0 0 0 15px);
+					@include rem(padding, 0 0 0 8px);
+					border-left: 5px solid $rgb-currencyexchanger-orange;
+				}
+
+				.hidden { display:none; }
+			}
+
+			.CurrencyExchange__resultLoggedPath{
+
+			}
+		}
+	}
+
+	.CurrencyExchange__buttons {
+		button {
+			color: #FFFFFF;
+			text-shadow:0px 1px 0px #8E8115;
+			@extend .buttonDefault;
+		}
+
+		button:nth-of-type(1) {
+			@include rem(margin, 0 5px 0 0);
+			background:linear-gradient(to bottom, #70FA3A 5%, $rgb-currencyexchanger-green 100%);
+			background-color:#70FA3A;
+			border:1px solid #10CA3C;
+		}
+
+		button:nth-of-type(1):hover {
+			background:linear-gradient(to bottom, #47D012 5%, #ABE375 100%);
+			background-color:#47D012;
+		}
+
+		button:nth-of-type(2) {
+			background:linear-gradient(to bottom, #ffec64 5%, $rgb-currencyexchanger-orange--light 100%);
+			background-color:#ffec64;
+			border:1px solid #ffaa22;
+		}
+
+		button:nth-of-type(2):hover {
+			background:linear-gradient(to bottom, #ffab23 5%, #ffec64 100%);
+			background-color:#ffab23;
+		}
+	}
+}
+
+

@@ -1,0 +1,1 @@
+0.0.1 - 12/11/2016 : Build environment OK, frontend-component basic funcionality OK.
