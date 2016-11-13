@@ -68,6 +68,7 @@
   },
   "dependencies": {
     "core-js": "^2.0.0",
+    "d3": "^4.3.0",
     "formous": "^0.8.8",
     "normalize.css": "^4.0.0",
     "react": "^15.0.0",

@@ -1,3 +1,4 @@
 12/11/2016 - 0.0.1: Build environment OK, frontend-component basic funcionality OK.
 12/11/2016 - 0.0.2: Conversion calculation OK.
 13/11/2016 - 0.0.3: Rickshaw in progress, chart plotted.
+14/11/2016 - 0.0.4: Rickshaw polish.

@@ -275,10 +275,15 @@ class CurrencyExchange extends React.Component {
 
 							<div className='CurrencyExchange__resultCurrencyExchange'>
 								<h4>
-									Interactive chart
+									Historical exchange rate
 								</h4>
 								<div className='CurrencyExchange__outputresultCurrencyExchange'>
 									<div id="CurrencyExchange__historyChart" className="CurrencyExchange__resultbox indent">
+										<div id="axis4"></div>
+										<div id="axis3"></div>
+										<div id="axis2"></div>
+										<div id="axis1"></div>
+										<div id="axis0"></div>
 										<div id="chart"></div>
 										<div id="legend_container">
 											<div id="smoother" title="Smoothing"></div>
