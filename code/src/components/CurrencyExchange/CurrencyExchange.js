@@ -10,12 +10,14 @@
 */
 
 require('./CurrencyExchange.scss');
+require('./Rickshaw.scss');
 
 import React from 'react';
 import Formous from 'formous';
-import handle from './componentSupport/handle';
-import communicator from './componentSupport/communicator';
+
 import helpers from './../../helpers/index';
+import componentFunctions from './componentSupport/index';
+
 
 /**
  * { Component }
@@ -38,12 +40,12 @@ class CurrencyExchange extends React.Component {
 	constructor(props) {
 		super(props);
 		// Handlers
-			this.handleSubmit = handle.submit.bind(this);
-			this.handleKeyUp = handle.keyUp.bind(this);
+			this.handleSubmit = componentFunctions.handle.submit.bind(this);
+			this.handleKeyUp = componentFunctions.handle.keyUp.bind(this);
 			this.mutateComponent = this.mutateComponent.bind(this);
-			this.onChangeDropdown = handle.onChangeDropdown.bind(this);
+			this.onChangeDropdown = componentFunctions.handle.onChangeDropdown.bind(this);
 			this.mapCurrencies = this.mapCurrencies.bind(this);
-			this.mockEvent = handle.mockEvent.bind(this);
+			this.mockEvent = componentFunctions.handle.mockEvent.bind(this);
 
 		// Vars
 		this.shouldHideWrittenOutcome = true;
@@ -53,7 +55,8 @@ class CurrencyExchange extends React.Component {
 			selectCurrencyA : 'USD',
 			selectCurrencyB : 'USD',
 			leadingCurrency : '',
-			currencyList : [],
+			currentCurrencyList : [],
+			historicCurrencyList : [],
 			resultCurrencyExchange : '', //remove this one
 			resultCurrencyExchangeA : '',
 			resultCurrencyExchangeB : '',
@@ -68,33 +71,34 @@ class CurrencyExchange extends React.Component {
 	}
 
 	componentWillMount() {
-		// Get all the curencies and rates
-		communicator.getCurrenciesAndRates(result => {
-			console.log(result);
-			let currencyArray = [];
+		// Get all the curencies and rates and process them, then draw the history map also
+		// This could be a bit cleaner with a promise chain
+			//Get rates
+			componentFunctions.communicate.getCurrenciesAndRates(currenciesAndRates => {
+				//Process rates
+				componentFunctions.process.processCurrenciesAndRates(currenciesAndRates, processedCurrenciesAndRates => {
+						console.log(processedCurrenciesAndRates);
 
-			const XMLArrayToday = result['gesmes:Envelope'].Cube.Cube[0].Cube;
+						const historicCurrencyList = processedCurrenciesAndRates.historicCurrencyList,
+							currentCurrencyList = processedCurrenciesAndRates.currentCurrencyList;
 
-			// Unpack the ugly array that I get back and make my own
-			XMLArrayToday.forEach(function (item, index){
-				const currencyAndRate = {
-					currency : item['@attributes'].currency,
-					rate : item['@attributes'].rate
-				};
+						// Update the state so the app knows the currencies
+						this.setState({currentCurrencyList : currentCurrencyList});
+						this.setState({historicCurrencyList : historicCurrencyList});
 
-				currencyArray.push(currencyAndRate);
-				currencyArray.push({
-					currency : 'EUR',
-					rate : 1
+						// Call the draw for the history graph
+						const graphObject = {
+							element : '#chart',
+							lineArray : historicCurrencyList
+						};
+
+						helpers.render.graph(graphObject);
 				});
 			});
-
-			// Update the state so the app knows the currencies
-			this.setState({currencyList : currencyArray});
-		});
 	}
 
 	componentDidMount() {
+
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -164,7 +168,7 @@ class CurrencyExchange extends React.Component {
 														onChange={this.onChangeDropdown.bind(this, 'selectCurrencyA')}
 														onMouseUp={formSubmit(this.handleSubmit)}
 													>
-														{this.state.currencyList.map(this.mapCurrencies)}
+														{this.state.currentCurrencyList.map(this.mapCurrencies)}
 													</select>
 												</div>
 
@@ -208,7 +212,7 @@ class CurrencyExchange extends React.Component {
 														value={this.state.selectCurrencyB}
 														onChange={this.onChangeDropdown.bind(this, 'selectCurrencyB')}
 													>
-														{this.state.currencyList.map(this.mapCurrencies)}
+														{this.state.currentCurrencyList.map(this.mapCurrencies)}
 													</select>
 												</div>
 
@@ -258,21 +262,30 @@ class CurrencyExchange extends React.Component {
 								</h4>
 								<br />
 
-								<p className='CurrencyExchange__outputresultCurrencyExchange'>
-									{this.state.result.leadingCurrencyAmount} {this.state.result.leadingCurrency}
-									&nbsp;
-									equals
-									&nbsp;
-									{this.state.result.followingCurrencyAmount} {this.state.result.followingCurrency}
-								</p>
-
-								<div className={this.shouldHideWrittenOutcome ? 'hidden' : 'CurrencyExchange__resultCurrencyExchange'}>
-									<h4>
-										Interactive chart
-									</h4>
-									<p className='CurrencyExchange__outputresultCurrencyExchange'>
-										this.props.fields.resultCurrencyExchange.writePath
+								<div className='CurrencyExchange__outputresultCurrencyExchange'>
+									<p className="indent">
+										{this.state.result.leadingCurrencyAmount} {this.state.result.leadingCurrency}
+										&nbsp;
+										equals
+										&nbsp;
+										{this.state.result.followingCurrencyAmount} {this.state.result.followingCurrency}
 									</p>
+								</div>
+							</div>
+
+							<div className='CurrencyExchange__resultCurrencyExchange'>
+								<h4>
+									Interactive chart
+								</h4>
+								<div className='CurrencyExchange__outputresultCurrencyExchange'>
+									<div id="CurrencyExchange__historyChart" className="CurrencyExchange__resultbox indent">
+										<div id="chart"></div>
+										<div id="legend_container">
+											<div id="smoother" title="Smoothing"></div>
+											<div id="legend"></div>
+										</div>
+										<div id="slider"></div>
+									</div>
 								</div>
 							</div>
 						</div>

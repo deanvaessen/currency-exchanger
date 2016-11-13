@@ -1,6 +1,6 @@
 /* ******************************
  * [communicator.js]
- * This file holds the communication calls for the component to test stream and file logging through NodeJS/Express.
+ * This file holds the communication calls for the component. Communication to outside and processing of this data
  *
  * Notes:
  *
@@ -10,7 +10,7 @@
 * Dependencies
 */
 
-import helpers from './../../../helpers/index';
+import helpers from './../../../../helpers/index';
 
 /**
  * Object

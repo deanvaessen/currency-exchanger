@@ -11,6 +11,8 @@ import ValidationHelpers from './functions/validation';
 import CommunicationHelpers from './functions/communication';
 import ConversionHelpers from './functions/conversion';
 import ExchangeHelpers from './functions/exchange';
+import RenderHelpers from './functions/render';
+import GenerationHelpers from './functions/generator';
 
 /**
 * { Function }
@@ -22,28 +24,28 @@ const index = (function () {
 			*/
 			const mutate = {
 				typography : {
-					capitaliseFirstLetter : function (input){
+					capitaliseFirstLetter : (input) => {
 						return MutationHelpers.typography.capitaliseFirstLetter(input);
 					},
-					filterSpecificFirstChar : function (input, charFilter){
+					filterSpecificFirstChar : (input, charFilter) => {
 						return MutationHelpers.typography.filterSpecificFirstChar(input, charFilter);
 					},
-					filterSpecificLastChar : function (input, charFilter){
+					filterSpecificLastChar : (input, charFilter) => {
 						return MutationHelpers.typography.filterSpecificLastChar(input, charFilter);
 					},
-					removeWhitespace : function (input){
+					removeWhitespace : (input) => {
 						return MutationHelpers.typography.removeWhitespace(input);
 					},
-					removeWhitespaceDuplicate : function (input){
+					removeWhitespaceDuplicate : (input) => {
 						return MutationHelpers.typography.removeWhitespaceDuplicate(input);
 					},
-					removeWhitespaceTrailing : function (input){
+					removeWhitespaceTrailing : (input) => {
 						return MutationHelpers.typography.removeWhitespaceTrailing(input);
 					},
-					removeWhitespaceTrailingLeading : function (input){
+					removeWhitespaceTrailingLeading : (input) => {
 						return MutationHelpers.typography.removeWhitespaceTrailingLeading(input);
 					},
-					replaceCommaWithDot : function (input){
+					replaceCommaWithDot : (input) => {
 						return MutationHelpers.typography.replaceCommaWithDot(input);
 					}
 				}
@@ -59,7 +61,7 @@ const index = (function () {
 
 			const communicate = {
 				ajax : {
-					get : function (url, callback){
+					get : (url, callback) => {
 						return CommunicationHelpers.ajax.get(url, callback);
 					}
 				}
@@ -73,8 +75,24 @@ const index = (function () {
 				}
 			};
 
-			const exchange = function (input, callback){
+			const exchange = (input, callback) => {
 				return ExchangeHelpers(input, callback);
+			};
+
+			const render = {
+				graph : function (input){
+					return RenderHelpers.graph(input);
+				}
+			};
+
+			const generate = {
+				secondsSinceEpochFromDate : function (input){
+					return GenerationHelpers.secondsSinceEpochFromDate(input);
+				},
+
+				colour : input => {
+					return GenerationHelpers.colour(input);
+				}
 			};
 
 			return {
@@ -82,7 +100,9 @@ const index = (function () {
 				validate : validate,
 				communicate : communicate,
 				convert : convert,
-				exchange : exchange
+				exchange : exchange,
+				render : render,
+				generate : generate
 			};
 })();
 

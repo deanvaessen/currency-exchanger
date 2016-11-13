@@ -170,10 +170,13 @@
 				header, p {
 					display: inline-block;
 				}
-				p{
-					@include rem(margin, 0 0 0 15px);
-					@include rem(padding, 0 0 0 8px);
-					border-left: 5px solid $rgb-currencyexchanger-orange;
+
+				.CurrencyExchange__outputresultCurrencyExchange{
+					.indent {
+						@include rem(margin, 0 0 0 12px);
+						@include rem(padding, 0 0 0 10px);
+						border-left: 5px solid $rgb-currencyexchanger-orange;
+					}
 				}
 
 				.hidden { display:none; }
@@ -216,5 +219,3 @@
 		}
 	}
 }
-
-

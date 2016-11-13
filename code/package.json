@@ -1,7 +1,7 @@
 {
   "private": true,
-  "version": "0.0.0",
-  "name": "js-numerals",
+  "version": "0.0.3",
+  "name": "js-currencyexchange",
   "description": "Currency exchange component Dean Vaessen",
   "main": "",
   "scripts": {
@@ -71,6 +71,7 @@
     "formous": "^0.8.8",
     "normalize.css": "^4.0.0",
     "react": "^15.0.0",
-    "react-dom": "^15.0.0"
+    "react-dom": "^15.0.0",
+    "rickshaw": "^1.6.0"
   }
 }

@@ -9,7 +9,7 @@
 /**
 * Dependencies
 */
-import helpers from './../../../helpers/index';
+import helpers from './../../../../helpers/index';
 import communicator from './communicator';
 
 //const removeWhitespace = helpers.mutate.typography.removeWhitespace;
