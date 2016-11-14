@@ -17,19 +17,19 @@ const index = (function () {
 
 
 			const handle = {
-				submit : (formStatus, fields) => {
+				submit : function (formStatus, fields, self) {
 					return handler.submit(formStatus, fields);
 				},
 
-				keyUp : (name, e) => {
+				keyUp : function (name, e) {
 					return handler.KeyUp(name, e);
 				},
 
-				onChangeDropdown : (name, e) => {
+				onChangeDropdown : function (name, e) {
 					return handler.onChangeDropdown(name, e);
 				},
 
-				mockEvent : (obj, event) => {
+				mockEvent : function (obj, event) {
 					return handler.mockEvent(obj, event);
 				}
 			};

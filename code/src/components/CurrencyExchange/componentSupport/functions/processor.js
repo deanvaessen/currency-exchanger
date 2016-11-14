@@ -36,10 +36,11 @@ let exposed = new class {
 				};
 
 				currentCurrencyList.push(currencyAndRate);
-				currentCurrencyList.push({
-					currency : 'EUR',
-					rate : 1
-				});
+			});
+
+			currentCurrencyList.push({
+				currency : 'EUR',
+				rate : 1
 			});
 
 			const XMLArrayHistory = input['gesmes:Envelope'].Cube.Cube;
@@ -65,10 +66,11 @@ let exposed = new class {
 					// Push it into the sub array array
 					currencyPeriodSubArray.push(currencyAndRate);
 
-					currencyPeriodSubArray.push({
-						currency : 'EUR',
-						rate : 1
-					});
+				});
+
+				currencyPeriodSubArray.push({
+					currency : 'EUR',
+					rate : 1
 				});
 
 				// Put it into the main array

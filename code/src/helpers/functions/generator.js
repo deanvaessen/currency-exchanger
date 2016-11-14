@@ -37,7 +37,7 @@
 		return secondSinceEpoch;
 	};
 
-	const colour = input => {
+	const colour = () => {
 		const letters = '0123456789ABCDEF';
 		let colour = '#';
 
@@ -47,9 +47,33 @@
 		return colour;
 	};
 
+
+	const id = (length, range) => {
+
+		if (length == undefined){
+			length = 10;
+		}
+
+		if (range == undefined){
+			range = {
+				max : 9,
+				min : 1
+			};
+		}
+
+		const randomID = function (length) {
+			return parseInt((Math.random() * range.max + range.min) * Math.pow(10, length - 1), 10);
+		};
+
+		let id = randomID(length);
+
+		return id;
+	};
+
 	return {
 		secondsSinceEpochFromDate : secondsSinceEpochFromDate,
-		colour : colour
+		colour : colour,
+		id : id
 	};
  })();
 

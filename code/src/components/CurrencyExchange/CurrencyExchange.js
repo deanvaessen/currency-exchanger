@@ -17,6 +17,7 @@ import Formous from 'formous';
 
 import helpers from './../../helpers/index';
 import componentFunctions from './componentSupport/index';
+import handle from './componentSupport/functions/handler';
 
 
 /**
@@ -40,10 +41,10 @@ class CurrencyExchange extends React.Component {
 	constructor(props) {
 		super(props);
 		// Handlers
-			this.handleSubmit = componentFunctions.handle.submit.bind(this);
-			this.handleKeyUp = componentFunctions.handle.keyUp.bind(this);
+			this.handleSubmit = handle.submit.bind(this);
+			this.handleKeyUp = handle.keyUp.bind(this);
 			this.mutateComponent = this.mutateComponent.bind(this);
-			this.onChangeDropdown = componentFunctions.handle.onChangeDropdown.bind(this);
+			this.onChangeDropdown = handle.onChangeDropdown.bind(this);
 			this.mapCurrencies = this.mapCurrencies.bind(this);
 			this.mockEvent = componentFunctions.handle.mockEvent.bind(this);
 
@@ -86,6 +87,8 @@ class CurrencyExchange extends React.Component {
 						this.setState({currentCurrencyList : currentCurrencyList});
 						this.setState({historicCurrencyList : historicCurrencyList});
 
+						console.log(currentCurrencyList);
+
 						// Call the draw for the history graph
 						const graphObject = {
 							element : '#chart',
@@ -105,7 +108,8 @@ class CurrencyExchange extends React.Component {
 	}
 
 	mapCurrencies(currency){
-		return <option>{currency.currency}</option>;
+		//console.log(currency);
+		return <option key={helpers.generate.id()}>{currency.currency}</option>;
 	}
 
 	mutateComponent(payload, stateObject){
@@ -201,7 +205,6 @@ class CurrencyExchange extends React.Component {
 										</div>
 									</div>
 
-
 									<div className="CurrencyExchange__logOutput">
 									<span className="arrow"></span>
 										<h4 className="header">Currency B</h4>
@@ -211,6 +214,7 @@ class CurrencyExchange extends React.Component {
 													<select
 														value={this.state.selectCurrencyB}
 														onChange={this.onChangeDropdown.bind(this, 'selectCurrencyB')}
+														onMouseUp={formSubmit(this.handleSubmit)}
 													>
 														{this.state.currentCurrencyList.map(this.mapCurrencies)}
 													</select>
@@ -245,13 +249,15 @@ class CurrencyExchange extends React.Component {
 											</div>
 										</div>
 									</div>
-									<br />
-									<br />
-
-
-									<br />
-									<br />
 								</div>
+							</div>
+
+							<div className="CurrencyExchange__buttons">
+								<button className="CurrencyExchange__clear" type="button" onClick=
+								{(event) => {
+									this.shouldHideWrittenOutcome = true;
+									this.props.clearForm();
+								}}>Clear</button>
 							</div>
 
 							<hr className={this.shouldHideWrittenOutcome ? 'hidden' : ''} />
@@ -275,7 +281,7 @@ class CurrencyExchange extends React.Component {
 
 							<div className='CurrencyExchange__resultCurrencyExchange'>
 								<h4>
-									Historical exchange rate
+									Historical exchange rates
 								</h4>
 								<div className='CurrencyExchange__outputresultCurrencyExchange'>
 									<div id="CurrencyExchange__historyChart" className="CurrencyExchange__resultbox indent">
@@ -295,14 +301,6 @@ class CurrencyExchange extends React.Component {
 							</div>
 						</div>
 					</div>
-						<div className="CurrencyExchange__buttons">
-							<button className="CurrencyExchange__clear" type="button" onClick=
-							{(event) => {
-								this.shouldHideWrittenOutcome = true;
-								this.props.clearForm();
-							}}>Clear</button>
-						</div>
-
 						<input
 							placeholder="You shouldn't be seeing me!"
 							type="text"

@@ -90,8 +90,12 @@ const index = (function () {
 					return GenerationHelpers.secondsSinceEpochFromDate(input);
 				},
 
-				colour : input => {
-					return GenerationHelpers.colour(input);
+				colour : () => {
+					return GenerationHelpers.colour();
+				},
+
+				id : () => {
+					return GenerationHelpers.id();
 				}
 			};
 

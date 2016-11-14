@@ -14,7 +14,7 @@
   */
 .CurrencyExchange__outerContainer{
 		margin: 10% auto;
-		@include rem(width, 650px)
+		@include rem(width, 850px)
 		box-shadow: 0px 1px 6px 1px rgba(0,0,0,0.4);
 		border-radius: 0% 0% 4% 4%;
 
@@ -83,12 +83,19 @@
 					select {
 						@include rem(margin, 10px auto);
 						display: block;
+						width: 204px;
 					}
 				}
 
 				.CurrencyExchange__currencyAmount {
 					display: inline-block;
 					@include rem(margin, 0 20px);
+
+					p {
+						text-align: center;
+						@include rem(margin, 20px 0 0 0);
+						display: none;
+					}
 				}
 			}
 
@@ -109,14 +116,6 @@
 				.CurrencyExchange__logLevel, .CurrencyExchange__logOutput {
 					width: 50%;
 					float: left;
-				}
-
-				.CurrencyExchange__logOutput:after{
-					content: '<--->';
-					position: absolute;
-					left: 50%;
-					transform: translateX(-50%);
-					top: 49%;
 				}
 
 				.header {
@@ -152,17 +151,6 @@
 				float: left;
 			}
 
-			.CurrencyExchange__loggedMessageDebug {
-				color: gray;
-			}
-
-			.CurrencyExchange__loggedMessageInfo {
-				color: green;
-			}
-
-			.CurrencyExchange__loggedMessageError{
-				color: red;
-			}
 
 			.CurrencyExchange__resultCurrencyExchange {
 				@include rem(margin, 30px 0 40px 0);
@@ -189,10 +177,15 @@
 	}
 
 	.CurrencyExchange__buttons {
+		@include rem(margin, 30px auto 80px);
+		width: 86px;
+		display: block;
+
 		button {
 			color: #FFFFFF;
 			text-shadow:0px 1px 0px #8E8115;
 			@extend .buttonDefault;
+			margin: 0 !important;
 		}
 
 		button:nth-of-type(1) {

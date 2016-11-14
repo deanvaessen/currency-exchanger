@@ -29,8 +29,6 @@ import * as d3 from 'd3';
 				lineArray : historicCurrencyList
 			};*/
 
-		console.log(input);
-
 		let currencies = [];
 
 		// Get all the currencies
@@ -43,15 +41,12 @@ import * as d3 from 'd3';
 			currencies.push(currency);
 		});
 
-		console.log(currencies);
-
 		// Populate the currencies array with all the relevant data (rate per date)
 			// For each currency
 			currencies.forEach((item, index) => {
 				const currencyIndex = index,
 					currency = item.currency;
 
-					console.log(item);
 				// Get all the rates for a date and push them into the currency array
 				input.lineArray.forEach((item, index) => {
 					const dateStamp = item.date;
@@ -71,14 +66,12 @@ import * as d3 from 'd3';
 				});
 			});
 
-		console.log(currencies);
-
 		// Create an array that Rickshaw understands
-		const largeScale = d3.scaleLinear().domain([13000, 14000]).nice();
-		const mediumScale = d3.scaleLinear().domain([130, 400]).nice();
-		const smallScale = d3.scaleLinear().domain([16, 129.9]).nice();
-		const verySmallScale = d3.scaleLinear().domain([3, 15.9]).nice();
-		const smallestScale = d3.scaleLinear().domain([0, 2.9]).nice();
+		const largeScale = d3.scaleLinear().domain([14000, 15500]).range([420, 500]).nice();
+		const mediumScale = d3.scaleLinear().domain([130, 1400]).range([290, 400]).nice();
+		const smallScale = d3.scaleLinear().domain([16, 129.9]).range([170, 290]).nice();
+		const verySmallScale = d3.scaleLinear().domain([3, 15.9]).range([100, 170]).nice();
+		const smallestScale = d3.scaleLinear().domain([0, 2.9]).range([0, 100]).nice();
 
 		let series = [];
 
@@ -133,10 +126,9 @@ import * as d3 from 'd3';
 
 
 
-			if (largestRate >= 400) {
-				console.log(largestRate);
+			if (largestRate >= 1400) {
 				plottedCurrency.scale = largeScale;
-			} else if (largestRate >= 130 && largestRate < 400) {
+			} else if (largestRate >= 130 && largestRate < 1400) {
 				plottedCurrency.scale = mediumScale;
 			} else if (largestRate >= 16 && largestRate < 130) {
 				plottedCurrency.scale = smallScale;
@@ -172,46 +164,46 @@ import * as d3 from 'd3';
 			series.push(plottedCurrency);
 
 			/*
-			   Smallest
-			   0.87785 = GBP
-			   1.0762 = CHF
-			   1.0895 = USD
-			   1.4336 = AUD
-			   1.4689 = CAD
-			   1.5132 = NZD
-			   1.5348 = SGD
-			   1.9558 = BGN
+				 Smallest
+				 0.87785 = GBP
+				 1.0762 = CHF
+				 1.0895 = USD
+				 1.4336 = AUD
+				 1.4689 = CAD
+				 1.5132 = NZD
+				 1.5348 = SGD
+				 1.9558 = BGN
 
-			  verySmall
-			   3.528 = TRY
-			   3.5815 = BRL
-			   4.1841 = ILS
-			   4.3588 = PLN
-			   4.6883 = MYR
-			   4.5023 = RON
-			   7.4065 = CNY
-			   7.4414 = DKK
-			   7.5045 = HRK
-			   8.4495 = HKD
-			   9.0733 = NOK
-			   9.909 = SEK
-			   15.1054 = ZAR
+				verySmall
+				 3.528 = TRY
+				 3.5815 = BRL
+				 4.1841 = ILS
+				 4.3588 = PLN
+				 4.6883 = MYR
+				 4.5023 = RON
+				 7.4065 = CNY
+				 7.4414 = DKK
+				 7.5045 = HRK
+				 8.4495 = HKD
+				 9.0733 = NOK
+				 9.909 = SEK
+				 15.1054 = ZAR
 
-			  Small
-			   22.0369 = MXN
-			   27.022 = CZK
-			   38.307 = THB
-			   53.358 = PHP
-			   69.6283 = RUB
-			   72.7085 = INR
-			   116.4 = JPY
+				Small
+				 22.0369 = MXN
+				 27.022 = CZK
+				 38.307 = THB
+				 53.358 = PHP
+				 69.6283 = RUB
+				 72.7085 = INR
+				 116.4 = JPY
 
-			  Medium
-			   307.3 = HUF
+				Medium
+				 307.3 = HUF
+				 1264.88 = KRW
 
-			  Large
-			   14473.88 = IDR
-			   1264.88 = KRW
+				Large
+				 14473.88 = IDR
 			*/
 		});
 
@@ -220,8 +212,8 @@ import * as d3 from 'd3';
 		// Now go on and render the thing
 			const graph = new Rickshaw.Graph({
 				element : document.querySelector(input.element),
-				//width : 1000 - 130,
-				height : 1200,
+				//width : 100%,
+				height : 500,
 				renderer : 'line',
 				series : series
 			});
@@ -242,28 +234,16 @@ import * as d3 from 'd3';
 				graph : graph
 			});
 
-			new Rickshaw.Graph.Axis.Y.Scaled({
-					element: document.getElementById('axis0'),
-									graph : graph,
-									scale : smallestScale,
-									tickFormat : Rickshaw.Fixtures.Number.formatKMBT,
-									orientation : 'left'
-			 });
 
 			new Rickshaw.Graph.Axis.Y.Scaled({
-					element: document.getElementById('axis1'),
+					element: document.getElementById('axis4'),
 									graph : graph,
-									scale : verySmallScale,
-									tickFormat : Rickshaw.Fixtures.Number.formatKMBT,
-									orientation : 'right'
-			 });
-
-			new Rickshaw.Graph.Axis.Y.Scaled({
-					element: document.getElementById('axis2'),
-									graph : graph,
-									scale : smallScale,
+									scale : largeScale,
 									orientation : 'left',
-									tickFormat : Rickshaw.Fixtures.Number.formatKMBT
+									tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function(y) {
+										return ((y / 100) *2) /1000 + 'K ' + '€';
+									},
+									height: 80
 			 });
 
 			new Rickshaw.Graph.Axis.Y.Scaled({
@@ -271,16 +251,49 @@ import * as d3 from 'd3';
 									graph : graph,
 									scale : mediumScale,
 									orientation : 'right',
-									tickFormat : Rickshaw.Fixtures.Number.formatKMBT
+									tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function(y) {
+										return parseInt((y / 1000) / 1.995)  + '€';
+									},
+									height : 110
 			 });
 
 			new Rickshaw.Graph.Axis.Y.Scaled({
-					element: document.getElementById('axis4'),
+					element: document.getElementById('axis2'),
 									graph : graph,
-									scale : largeScale,
+									scale : smallScale,
+									tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function(y) {
+										return (y / 1000)  + '€';
+									},
 									orientation : 'left',
-									tickFormat : Rickshaw.Fixtures.Number.formatKMBT
+									height : 120
 			 });
+
+			new Rickshaw.Graph.Axis.Y.Scaled({
+					element: document.getElementById('axis1'),
+									graph : graph,
+									scale : verySmallScale,
+									tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function(y) {
+										return (y / 1000)  + '€';
+									},
+									orientation : 'right',
+									height : 70
+			 });
+			new Rickshaw.Graph.Axis.Y.Scaled({
+					element: document.getElementById('axis0'),
+									graph : graph,
+									scale : smallestScale,
+									tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function(y) {
+										return ((y / 1000) * 1.2 ).toPrecision(2)  + '€';
+									},
+									orientation : 'left',
+									height: 100,
+			 });
+
+			/*
+			const abs_y = Math.abs(y);
+			if (abs_y >= 1000000000000)   { return y / 1000000000000 + "T" }
+			else if (abs_y >= 1000)       { return (y / 1000)  + '€' }
+			*/
 
 /*			const yAxis = new Rickshaw.Graph.Axis.Y.Scaled({
 				graph : graph,

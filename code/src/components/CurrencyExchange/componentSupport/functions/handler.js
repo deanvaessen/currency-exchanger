@@ -36,7 +36,7 @@ let exposed = new class {
 	}
 
 	submit(formStatus, fields) {
-
+		console.log(this.state);
 		// Get state and run some filters and tests
 		const leadingCurrencySelector = this.state.leadingCurrency,
 			leadingCurrency = (leadingCurrencySelector === 'valueCurrencyA' ? this.state.selectCurrencyA : this.state.selectCurrencyB),
@@ -69,7 +69,7 @@ let exposed = new class {
 
 		// Find the appropriate rates
 
-		this.state.currencyList.forEach((item, index) => {
+		this.state.currentCurrencyList.forEach((item, index) => {
 			if (item.currency == leadingCurrency){
 				leadingCurrencyRate = item.rate;
 			}
