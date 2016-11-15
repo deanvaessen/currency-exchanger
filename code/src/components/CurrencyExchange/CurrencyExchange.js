@@ -10,7 +10,9 @@
 */
 
 require('./CurrencyExchange.scss');
-require('./Rickshaw.scss');
+require('./RickshawHistoryAll.scss');
+//require('./RickshawHistorySelected.scss');
+require('./RickshawShared.scss');
 
 import React from 'react';
 import Formous from 'formous';
@@ -57,7 +59,8 @@ class CurrencyExchange extends React.Component {
 			selectCurrencyB : 'USD',
 			leadingCurrency : '',
 			currentCurrencyList : [],
-			historicCurrencyList : [],
+			historicCurrencyListAll : [],
+			historicCurrencyListSelected : [],
 			resultCurrencyExchange : '', //remove this one
 			resultCurrencyExchangeA : '',
 			resultCurrencyExchangeB : '',
@@ -78,24 +81,49 @@ class CurrencyExchange extends React.Component {
 			componentFunctions.communicate.getCurrenciesAndRates(currenciesAndRates => {
 				//Process rates
 				componentFunctions.process.processCurrenciesAndRates(currenciesAndRates, processedCurrenciesAndRates => {
-						console.log(processedCurrenciesAndRates);
 
-						const historicCurrencyList = processedCurrenciesAndRates.historicCurrencyList,
+						const historicCurrencyListAll = processedCurrenciesAndRates.historicCurrencyListAll,
+							historicCurrencyListSelected = processedCurrenciesAndRates.historicCurrencyListSelected,
 							currentCurrencyList = processedCurrenciesAndRates.currentCurrencyList;
+
 
 						// Update the state so the app knows the currencies
 						this.setState({currentCurrencyList : currentCurrencyList});
-						this.setState({historicCurrencyList : historicCurrencyList});
+						this.setState({historicCurrencyListAll : historicCurrencyListAll});
+						this.setState({historicCurrencyListSelected : historicCurrencyListSelected});
 
-						console.log(currentCurrencyList);
+						console.log(historicCurrencyListSelected);
 
-						// Call the draw for the history graph
-						const graphObject = {
-							element : '#chart',
-							lineArray : historicCurrencyList
+						/**
+						 * { Historic graph, all currencies }
+						 * Call the draw for the history graph of all currencies
+						*/
+						const graphHistoryAll = {
+							lineArray : historicCurrencyListAll,
+							elements : {
+								axes : {
+									y : [
+										'chartHistoryAll__yAxis0',
+										'chartHistoryAll__yAxis1',
+										'chartHistoryAll__yAxis2',
+										'chartHistoryAll__yAxis3',
+										'chartHistoryAll__yAxis4'
+									]
+								},
+								chart : '#chartHistoryAll',
+								smoothing : 'chartHistoryAll__smoother',
+								legend : {
+									container : 'chartHistoryAll__legendContainer',
+									legend : 'chartHistoryAll__legend'
+								},
+								slider : 'chartHistoryAll__slider'
+							},
+							attributes : {
+								height : 500
+							}
 						};
 
-						helpers.render.graph(graphObject);
+						helpers.render.graph(graphHistoryAll);
 				});
 			});
 	}
@@ -268,7 +296,7 @@ class CurrencyExchange extends React.Component {
 								</h4>
 								<br />
 
-								<div className='CurrencyExchange__outputresultCurrencyExchange'>
+								<div className='CurrencyExchange__outputResultCurrencyExchange'>
 									<p className="indent">
 										{this.state.result.leadingCurrencyAmount} {this.state.result.leadingCurrency}
 										&nbsp;
@@ -280,22 +308,49 @@ class CurrencyExchange extends React.Component {
 							</div>
 
 							<div className='CurrencyExchange__resultCurrencyExchange'>
-								<h4>
-									Historical exchange rates
-								</h4>
-								<div className='CurrencyExchange__outputresultCurrencyExchange'>
-									<div id="CurrencyExchange__historyChart" className="CurrencyExchange__resultbox indent">
-										<div id="axis4"></div>
-										<div id="axis3"></div>
-										<div id="axis2"></div>
-										<div id="axis1"></div>
-										<div id="axis0"></div>
-										<div id="chart"></div>
-										<div id="legend_container">
-											<div id="smoother" title="Smoothing"></div>
-											<div id="legend"></div>
+
+								<div className={this.shouldHideWrittenOutcome ? 'hidden' :
+								'CurrencyExchange__outputResultCurrencyExchange'}>
+									<h4>
+										{
+											this.state.result.followingCurrency === this.state.result.leadingCurrency ?
+												'Historic exchange rate of the' + ' ' + this.state.result.followingCurrency
+												+ ' ' + 'against the' + ' ' + 'Euro'
+												:
+												'Historic exchange rate of the' + ' ' + this.state.result.followingCurrency
+												+ ' ' + 'against the' + ' ' + this.state.result.leadingCurrency
+										}
+									</h4>
+
+									<div id="CurrencyExchange__historyChartSelected" className="CurrencyExchange__resultbox indent">
+										<div id="chartHistorySelected__yAxis1"></div>
+										<div id="chartHistorySelected__yAxis0"></div>
+										<div id="chartHistorySelected"></div>
+										<div id="chartHistorySelected__legendContainer">
+											<div id="chartHistorySelected__smoother" title="Smoothing"></div>
+											<div id="chartHistorySelected__legend"></div>
 										</div>
-										<div id="slider"></div>
+										<div id="chartHistorySelected__slider"></div>
+									</div>
+								</div>
+
+								<div className='CurrencyExchange__outputResultCurrencyExchange'>
+									<h4>
+										Historical exchange rates of all currencies against the Euro
+									</h4>
+
+									<div id="CurrencyExchange__historyChartAll" className="CurrencyExchange__resultbox indent">
+										<div id="chartHistoryAll__yAxis4"></div>
+										<div id="chartHistoryAll__yAxis3"></div>
+										<div id="chartHistoryAll__yAxis2"></div>
+										<div id="chartHistoryAll__yAxis1"></div>
+										<div id="chartHistoryAll__yAxis0"></div>
+										<div id="chartHistoryAll"></div>
+										<div id="chartHistoryAll__legendContainer">
+											<div id="chartHistoryAll__smoother" title="Smoothing"></div>
+											<div id="chartHistoryAll__legend"></div>
+										</div>
+										<div id="chartHistoryAll__slider"></div>
 									</div>
 								</div>
 							</div>

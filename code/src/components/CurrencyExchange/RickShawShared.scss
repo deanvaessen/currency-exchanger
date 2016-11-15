@@ -12,14 +12,21 @@
  /**
 * { Styles }
 */
+	/* Graph */
+	.rickshaw_graph {
+		position: relative;
+	}
+	.rickshaw_graph svg {
+		display: block;
+		overflow: hidden;
+	}
 
-	/*Legend*/
-		#legend_container {
-			//height: 600px;
-			//display: none !important;
-			position:absolute;
-		}
+	.rickshaw_graph .y_axis,
+	.rickshaw_graph  .x_axis_d3 {
+		fill: none;
+	}
 
+	/* Legend */
 		.rickshaw_legend {
 			font-family: Arial;
 			font-size: 12px;
@@ -205,83 +212,6 @@
 		}
 		.rickshaw_graph .detail .dot.active {
 			display: block;
-		}
-
-
-	/* graph */
-		.rickshaw_graph {
-			position: relative;
-		}
-		.rickshaw_graph svg {
-			display: block;
-			overflow: hidden;
-		}
-
-		.rickshaw_graph .y_axis,
-		.rickshaw_graph  .x_axis_d3 {
-			fill: none;
-		}
-
-		#chart {
-			//left: 50px;
-			//width: 1000px;
-			width: 98%;
-			//position: absolute;
-			@include rem(margin, 0 0 120px 0);
-		}
-
-		#axis4, #axis3, #axis2, #axis1, #axis0 {
-			overflow: hidden;
-		}
-
-		// large scale
-		#axis4 {
-			position: absolute;
-			left: 98%;
-			width: 40px;
-			bottom: 420px;
-			height: 80px;
-		}
-
-		// medium scale
-		#axis3 {
-			position: absolute;
-			left: 3%;
-			width: 40px;
-			bottom: 310px;
-			height: 80px;
-
-			svg {
-				position: relative;
-				top: 62px;
-			}
-		}
-
-		// small scale
-		#axis2 {
-			position: absolute;
-			left: 98%;
-			width: 40px;
-			bottom: 170px;
-			height: 120px;
-		}
-
-		// very small scale
-		#axis1 {
-			position: absolute;
-			left: 3%;
-			bottom: 67px;
-			width: 40px;
-			height: 70px;
-		}
-
-		// smallest scale
-		#axis0 {
-			position: absolute;
-			width: 40px;
-			bottom: 0;
-			left: 98%;
-			height: 70px;
 		}
 
 	/* ticks */

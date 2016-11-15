@@ -1,0 +1,165 @@
+/*******************************
+ * [_Rickshaw.scss]
+ * Define the Rickshaw chart styling here
+ ******************************/
+
+/**
+ * { Dependencies }
+ */
+	// Shared styling
+	@import './../../stylesupport/index.scss';
+
+ /**
+* { Styles }
+*/
+#CurrencyExchange__historyChartAll {
+
+	/* Graph */
+		#chartHistoryAll {
+			//left: 50px;
+			//width: 1000px;
+			width: 95%;
+			//position: absolute;
+			@include rem(margin, 0 0 120px 22px);
+		}
+
+		#chartHistoryAll__yAxis4, #chartHistoryAll__yAxis3, #chartHistoryAll__yAxis2, #chartHistoryAll__yAxis1, #chartHistoryAll__yAxis0 {
+			overflow: hidden;
+		}
+
+		// large scale
+		#chartHistoryAll__yAxis4 {
+			position: absolute;
+			left: 98%;
+			width: 40px;
+			bottom: 420px;
+			height: 80px;
+		}
+
+		// medium scale
+		#chartHistoryAll__yAxis3 {
+			position: absolute;
+			left: 3%;
+			width: 40px;
+			bottom: 310px;
+			height: 80px;
+
+			svg {
+				position: relative;
+				top: 62px;
+			}
+		}
+
+		// small scale
+		#chartHistoryAll__yAxis2 {
+			position: absolute;
+			left: 98%;
+			width: 40px;
+			bottom: 170px;
+			height: 120px;
+		}
+
+		// very small scale
+		#chartHistoryAll__yAxis1 {
+			position: absolute;
+			left: 3%;
+			bottom: 67px;
+			width: 40px;
+			height: 70px;
+		}
+
+		// smallest scale
+		#chartHistoryAll__yAxis0 {
+			position: absolute;
+			width: 40px;
+			bottom: 0;
+			left: 98%;
+			height: 70px;
+		}
+
+	/*Legend*/
+		#chartHistoryAll__legendContainer {
+			//height: 600px;
+			//display: none !important;
+			position:absolute;
+		}
+
+		.rickshaw_legend {
+			font-family: Arial;
+			font-size: 12px;
+			color: white;
+			background: #404040;
+			display: inline-block;
+			padding: 12px 5px;
+			border-radius: 2px;
+			position: relative;
+			width: 100%;
+			bottom: 100px;
+		}
+		.rickshaw_legend:hover {
+			z-index: 10;
+		}
+		.rickshaw_legend .swatch {
+			width: 10px;
+			height: 10px;
+			border: 1px solid rgba(0, 0, 0, 0.2);
+		}
+		.rickshaw_legend .line {
+			//clear: both;
+			line-height: 140%;
+			padding-right: 15px;
+			max-width: 100px;
+			width: 33%;
+			float: left;
+		}
+		.rickshaw_legend .line .swatch {
+			display: inline-block;
+			margin-right: 3px;
+			border-radius: 2px;
+		}
+		.rickshaw_legend .label {
+			margin: 0;
+			white-space: nowrap;
+			display: inline;
+			font-size: inherit;
+			background-color: transparent;
+			color: inherit;
+			font-weight: normal;
+			line-height: normal;
+			padding: 0px;
+			text-shadow: none;
+		}
+		.rickshaw_legend .action:hover {
+			opacity: 0.6;
+		}
+		.rickshaw_legend .action {
+			margin-right: 0.2em;
+			font-size: 10px;
+			opacity: 0.2;
+			cursor: pointer;
+			font-size: 14px;
+		}
+		.rickshaw_legend .line.disabled {
+			opacity: 0.4;
+		}
+		.rickshaw_legend ul {
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+			margin: 2px;
+			cursor: pointer;
+		}
+		.rickshaw_legend li {
+			padding: 0 0 0 2px;
+			min-width: 80px;
+			white-space: nowrap;
+		}
+		.rickshaw_legend li:hover {
+			background: rgba(255, 255, 255, 0.08);
+			border-radius: 3px;
+		}
+		.rickshaw_legend li:active {
+			background: rgba(255, 255, 255, 0.2);
+			border-radius: 3px;
+		}
+}

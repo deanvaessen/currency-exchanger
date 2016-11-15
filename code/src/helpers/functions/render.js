@@ -19,17 +19,26 @@ import * as d3 from 'd3';
 
 	/**
 	 * { graph }
-	 * Support helpers for graph rendering
+	 * A functionfor graph rendering
 	*/
 	const graph = input => {
 
-		// Input looks like this:
-			/*const input = {
-				element : '#CurrencyExchange__historyChart',
-				lineArray : historicCurrencyList
-			};*/
+		// Define variables
+		let currencies = [],
+			yAxes = {
 
-		let currencies = [];
+		};
+
+		const chartElement = input.elements.chart,
+				legendElement = input.elements.legend.legend,
+				chartHeight = input.attributes.height;
+
+		input.elements.axes.y.forEach((item, index) => {
+			const axisID = item,
+					axisName = 'yAxis' + index;
+
+			yAxes[axisName] = axisID;
+		});
 
 		// Get all the currencies
 		input.lineArray[0].currencies.forEach((item, index) => {
@@ -41,7 +50,10 @@ import * as d3 from 'd3';
 			currencies.push(currency);
 		});
 
-		// Populate the currencies array with all the relevant data (rate per date)
+		/**
+		 * { Currency array population }
+		 * Populate the currencies array with all the relevant data (rate per date)
+		*/
 			// For each currency
 			currencies.forEach((item, index) => {
 				const currencyIndex = index,
@@ -66,7 +78,11 @@ import * as d3 from 'd3';
 				});
 			});
 
-		// Create an array that Rickshaw understands
+		/**
+		 * { Rickshaw data array }
+		 * Create an array that Rickshaw understands
+		*/
+		// First define some scales
 		const largeScale = d3.scaleLinear().domain([14000, 15500]).range([420, 500]).nice();
 		const mediumScale = d3.scaleLinear().domain([130, 1400]).range([290, 400]).nice();
 		const smallScale = d3.scaleLinear().domain([16, 129.9]).range([170, 290]).nice();
@@ -112,20 +128,9 @@ import * as d3 from 'd3';
 
 			// Different scales for different items
 			// Find the largest item
-/*			let largest;
-
-			plottedCurrency.data.forEach((item, index) => {
-				for (i = 0; i<= largest; i++){
-						if (item[i]  >largest) {
-								largest = item[i];
-						}
-				}
-			})*/
-
 			const largestRate = Math.max.apply(0, yArray);
 
-
-
+			// Take a scale to match it
 			if (largestRate >= 1400) {
 				plottedCurrency.scale = largeScale;
 			} else if (largestRate >= 130 && largestRate < 1400) {
@@ -138,211 +143,107 @@ import * as d3 from 'd3';
 				plottedCurrency.scale = smallestScale;
 			}
 
-/*			switch (currency) {
-					case 'IDR' :
-					case 'KRW' :
-						plottedCurrency.scale = largeScale;
-						break;
-					case 'HUF' :
-						plottedCurrency.scale = mediumScale;
-						break;
-					case 'ZAR' :
-					case 'MXN' :
-					case 'CZK' :
-					case 'THB' :
-					case 'PHP':
-					case 'RUB':
-					case 'INR':
-					case 'JPY':
-						plottedCurrency.scale = smallScale;
-						console.log(currency);
-						break;
-					default:
-						plottedCurrency.scale = verySmallScale;
-			}*/
-
 			series.push(plottedCurrency);
 
-			/*
-				 Smallest
-				 0.87785 = GBP
-				 1.0762 = CHF
-				 1.0895 = USD
-				 1.4336 = AUD
-				 1.4689 = CAD
-				 1.5132 = NZD
-				 1.5348 = SGD
-				 1.9558 = BGN
-
-				verySmall
-				 3.528 = TRY
-				 3.5815 = BRL
-				 4.1841 = ILS
-				 4.3588 = PLN
-				 4.6883 = MYR
-				 4.5023 = RON
-				 7.4065 = CNY
-				 7.4414 = DKK
-				 7.5045 = HRK
-				 8.4495 = HKD
-				 9.0733 = NOK
-				 9.909 = SEK
-				 15.1054 = ZAR
-
-				Small
-				 22.0369 = MXN
-				 27.022 = CZK
-				 38.307 = THB
-				 53.358 = PHP
-				 69.6283 = RUB
-				 72.7085 = INR
-				 116.4 = JPY
-
-				Medium
-				 307.3 = HUF
-				 1264.88 = KRW
-
-				Large
-				 14473.88 = IDR
-			*/
 		});
 
 		console.log(series);
 
-		// Now go on and render the thing
+		/**
+		 * { Rickshaw rendering }
+		 * Now go on and render the thing
+		*/
 			const graph = new Rickshaw.Graph({
-				element : document.querySelector(input.element),
+				element : document.querySelector(chartElement),
 				//width : 100%,
-				height : 500,
+				height : chartHeight,
 				renderer : 'line',
 				series : series
 			});
 
 
-			/*eslint-disable */ // KAN WEER WEG DEZE REGEL
 
-			const hoverDetail = new Rickshaw.Graph.HoverDetail({
+			new Rickshaw.Graph.HoverDetail({
 				graph : graph
 			});
 
-			const legend = new Rickshaw.Graph.Legend({
+			new Rickshaw.Graph.Legend({
 				graph : graph,
-				element : document.getElementById('legend')
+				element : document.getElementById(legendElement)
 			});
 
 			new Rickshaw.Graph.Axis.Time({
 				graph : graph
 			});
 
+			if (yAxes.yAxis4) {
+				new Rickshaw.Graph.Axis.Y.Scaled({
+						element : document.getElementById(yAxes.yAxis4),
+										graph : graph,
+										scale : largeScale,
+										orientation : 'left',
+										tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
+											return ((y / 100) * 2) / 1000 + 'K ' + '€';
+										},
+										height : 80
+				});
+			}
 
-			new Rickshaw.Graph.Axis.Y.Scaled({
-					element: document.getElementById('axis4'),
-									graph : graph,
-									scale : largeScale,
-									orientation : 'left',
-									tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function(y) {
-										return ((y / 100) *2) /1000 + 'K ' + '€';
-									},
-									height: 80
-			 });
+			if (yAxes.yAxis3) {
+				new Rickshaw.Graph.Axis.Y.Scaled({
+						element : document.getElementById(yAxes.yAxis3),
+										graph : graph,
+										scale : mediumScale,
+										orientation : 'right',
+										tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
+											return parseInt((y / 1000) / 1.995) + '€';
+										},
+										height : 110
+				});
+			}
 
-			new Rickshaw.Graph.Axis.Y.Scaled({
-					element: document.getElementById('axis3'),
-									graph : graph,
-									scale : mediumScale,
-									orientation : 'right',
-									tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function(y) {
-										return parseInt((y / 1000) / 1.995)  + '€';
-									},
-									height : 110
-			 });
+			if (yAxes.yAxis2) {
+				new Rickshaw.Graph.Axis.Y.Scaled({
+						element : document.getElementById(yAxes.yAxis2),
+										graph : graph,
+										scale : smallScale,
+										tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
+											return (y / 1000) + '€';
+										},
+										orientation : 'left',
+										height : 120
+				});
+			}
 
-			new Rickshaw.Graph.Axis.Y.Scaled({
-					element: document.getElementById('axis2'),
-									graph : graph,
-									scale : smallScale,
-									tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function(y) {
-										return (y / 1000)  + '€';
-									},
-									orientation : 'left',
-									height : 120
-			 });
+			if (yAxes.yAxis1) {
+				new Rickshaw.Graph.Axis.Y.Scaled({
+						element : document.getElementById(yAxes.yAxis1),
+										graph : graph,
+										scale : verySmallScale,
+										tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
+											return (y / 1000) + '€';
+										},
+										orientation : 'right',
+										height : 70
+				});
+			}
 
-			new Rickshaw.Graph.Axis.Y.Scaled({
-					element: document.getElementById('axis1'),
-									graph : graph,
-									scale : verySmallScale,
-									tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function(y) {
-										return (y / 1000)  + '€';
-									},
-									orientation : 'right',
-									height : 70
-			 });
-			new Rickshaw.Graph.Axis.Y.Scaled({
-					element: document.getElementById('axis0'),
-									graph : graph,
-									scale : smallestScale,
-									tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function(y) {
-										return ((y / 1000) * 1.2 ).toPrecision(2)  + '€';
-									},
-									orientation : 'left',
-									height: 100,
-			 });
-
-			/*
-			const abs_y = Math.abs(y);
-			if (abs_y >= 1000000000000)   { return y / 1000000000000 + "T" }
-			else if (abs_y >= 1000)       { return (y / 1000)  + '€' }
-			*/
-
-/*			const yAxis = new Rickshaw.Graph.Axis.Y.Scaled({
-				graph : graph,
-				scale : 500
-			 });*/
+			if (yAxes.yAxis0) {
+				new Rickshaw.Graph.Axis.Y.Scaled({
+						element : document.getElementById(yAxes.yAxis0),
+										graph : graph,
+										scale : smallestScale,
+										tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
+											return ((y / 1000) * 1.2).toPrecision(2) + '€';
+										},
+										orientation : 'left',
+										height : 100
+				});
+			}
 
 			graph.render();
 			// needs jquery
-/*			const shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
-				graph : graph,
-				legend : legend
-			});*/
 
-/*			const timeAxis = new Rickshaw.Graph.Axis.Time({
-					graph : graph
-			});
-
-
-			const yAxis = new Rickshaw.Graph.Axis.Y({
-									graph : graph,
-									tickFormat : function(y){return 9000}
-			 });*/
-
-		/*eslint-enable */
-
-		/*let graphObject = {
-			element : document.querySelector(input.element),
-			renderer : 'line',
-			series : series,
-			onComplete: function(transport) {
-
-				const x_axis = new Rickshaw.Graph.Axis.Time({
-					graph : transport.graph
-				});
-				x_axis.graph.update();
-			}
-		};*/
-
-
-
-/*		const graph = new Rickshaw.Graph.Axis.X({
-			graph : graphObject,
-			tickFormat : function (x) {
-				return new Date(x * 1000).toLocaleTimeString();
-			}
-		});*/
-
-
-		//graph.render();
 	};
 
 	return {
@@ -351,89 +252,7 @@ import * as d3 from 'd3';
  })();
 
 
- /**
-	* Export
-	*/
+/**
+* Export
+*/
  module.exports = index;
-
-// This is what the series array looks like
-/* {
-	data : [
-			{ x : 0, y : somerate },
-			{ x : 1, y : somerate }
-		],
-		color : 'somecolor',
-		name: 'somecurrency'
- },
- {
-	data : [
-			{ x : 0, y : somerate },
-			{ x : 1, y : somerate }
-		],
-		color : 'somecolor',
-		name: 'somecurrency'
- }*/
-
-
-
-
-
-
- /*			{
-				data : [
-						{ x : somedate, y : somerate },
-						{ x : nextdate, y : nextrate }
-					],
-					color : 'somecolor',
-					name: 'somecurrency'
-			},
-			{
-				data : [
-						{ x : somedate, y : somerate },
-						{ x : nextdate, y : nextrate }
-					],
-					color : 'somecolor',
-					name: 'somecurrency'
-			}
-
-
-
-			const data = [
-						{ x : somedate, y : somerate },
-						{ x : nextdate, y : nextrate }
-					],
-
-
-
-
-
-
-
-
-
-			const graph = new Rickshaw.Graph.Axis.X({
-				graph: graphObject,
-				tickFormat: function(x){
-							return  x
-						}
-				})
-
-
- */
-
-
-
-
-
- /*		const graph = new Rickshaw.Graph.Axis.X({
-			graph : graphObject,
-			tickFormat : function(x){
-						return function () {
-
-							datesarray.forEach(function(item, index){
-								const date = datesarray.shift();
-								return date;
-							});
-						}
-			}
-		});*/

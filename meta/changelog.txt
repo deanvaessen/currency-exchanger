@@ -2,3 +2,5 @@
 12/11/2016 - 0.0.2: Conversion calculation OK.
 13/11/2016 - 0.0.3: Rickshaw in progress, chart plotted.
 14/11/2016 - 0.0.4: Rickshaw polish.
+15/11/2016 - 0.0.5: Rickshaw historic overview fixes. This is a chart I made to learn Rickshaw.
+16/11/2016 - 0.0.6: Rickshaw selected currencies base. Chart as per assignment.

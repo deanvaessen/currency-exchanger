@@ -159,10 +159,10 @@
 					display: inline-block;
 				}
 
-				.CurrencyExchange__outputresultCurrencyExchange{
+				.CurrencyExchange__outputResultCurrencyExchange{
 					.indent {
 						@include rem(margin, 0 0 0 12px);
-						@include rem(padding, 0 0 0 10px);
+						@include rem(padding, 0 0 0 22px);
 						border-left: 5px solid $rgb-currencyexchanger-orange;
 					}
 				}

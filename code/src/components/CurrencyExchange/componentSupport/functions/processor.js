@@ -47,7 +47,8 @@ let exposed = new class {
 
 		// Draw up some arrays for historical representation
 			// Unpack the ugly array that I get back and make my own
-			let historicCurrencyList = [];
+			let historicCurrencyListAll = [];
+			let historicCurrencyListSelected = [];
 
 			// For each array that holds arrays with rates and currencies for a specific time instance
 			XMLArrayHistory.forEach(function (item, index){
@@ -68,21 +69,28 @@ let exposed = new class {
 
 				});
 
-				currencyPeriodSubArray.push({
+				// Put it into the main arrays
+					// The array for the graph with all the currencies (except for Euro)
+					historicCurrencyListAll.push({
+						date : dateStamp,
+						currencies : currencyPeriodSubArray
+					});
+			});
+
+			// Edit the array for the graph for the selected currencies
+			historicCurrencyListSelected = historicCurrencyListAll.slice();
+
+			historicCurrencyListSelected.forEach((item, index) => {
+				item.currencies.push({
 					currency : 'EUR',
 					rate : 1
-				});
-
-				// Put it into the main array
-				historicCurrencyList.push({
-					date : dateStamp,
-					currencies : currencyPeriodSubArray
 				});
 			});
 
 			callback({
 				currentCurrencyList : currentCurrencyList,
-				historicCurrencyList : historicCurrencyList
+				historicCurrencyListAll : historicCurrencyListAll,
+				historicCurrencyListSelected : historicCurrencyListSelected
 			});
 	}
 };

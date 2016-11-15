@@ -37,7 +37,8 @@ let exposed = new class {
 
 	submit(formStatus, fields) {
 		console.log(this.state);
-		// Get state and run some filters and tests
+
+		// Get state and run some filters and tests to find and fix issues
 		const leadingCurrencySelector = this.state.leadingCurrency,
 			leadingCurrency = (leadingCurrencySelector === 'valueCurrencyA' ? this.state.selectCurrencyA : this.state.selectCurrencyB),
 			leadingCurrencyValue = (leadingCurrencySelector === 'valueCurrencyA' ? fields.currencyA.value : fields.currencyB.value),
@@ -99,6 +100,67 @@ let exposed = new class {
 
 			// Fire off an exchange request
 			communicator.exchange(exchangeObject, (result) => this.mutateComponent(result));
+
+
+			/**
+			 * { Historic graph, selected currencies }
+			 * Call the draw for the history graph of the currencies that are selected by the user
+			*/
+			/*eslint-disable */
+
+			let historicCurrencyListSelected = this.state.historicCurrencyListSelected.slice();
+			console.log(historicCurrencyListSelected);
+
+			// Throw out all the currencies we don't need
+				//For each date
+				historicCurrencyListSelected.forEach((item, index) => {
+					const dateIndex = index;
+					let removeFromArrayIndexes = [];
+
+					// Throw out the currencies we don't need
+					item.currencies.forEach((item, index) => {
+						if (item.currency != followingCurrency) {
+								//historicCurrencyListSelected[dateIndex].currencies.splice(index, 1);
+
+								removeFromArrayIndexes.push(index);
+								//console.log(index)
+
+						} else {
+							console.log(item, index, followingCurrency);
+						}
+					});
+
+					for (let i = removeFromArrayIndexes.length -1; i >= 0; i--){
+					   item.currencies.splice(removeFromArrayIndexes[i],1);
+					}
+				});
+
+			console.log(historicCurrencyListSelected);
+
+			// Call a render
+			const graphHistorySelected = {
+				lineArray : historicCurrencyListSelected,
+				elements : {
+					axes : {
+						y : [
+							'chartHistorySelected__yAxis0',
+							'chartHistorySelected__yAxis1'
+						]
+					},
+					chart : '#chartHistorySelected',
+					smoothing : 'chartHistorySelected__smoother',
+					legend : {
+						container : 'chartHistorySelected__legendContainer',
+						legend : 'chartHistorySelected__legend'
+					},
+					slider : 'chartHistorySelected__slider'
+				},
+				attributes : {
+					height : 300
+				}
+			};
+
+			helpers.render.graph(graphHistorySelected);
 	}
 
 	keyUp(name, e) {
