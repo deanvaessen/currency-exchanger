@@ -54,6 +54,7 @@ let exchange = (input, callback) => {
 					// followingCurrencyInEuros = followingCurrencyAmount / followingCurrencyRate;
 
 			console.log(leadingCurrencyInEuros, followingCurrencyRate);
+			console.log(leadingCurrencyInEuros, leadingCurrencyRate);
 			// Calculate between the currencies
 			console.log(leadingCurrencyInEuros * followingCurrencyRate);
 			return (leadingCurrencyInEuros * followingCurrencyRate);
@@ -61,8 +62,13 @@ let exchange = (input, callback) => {
 
 		let result = input;
 
-		result.followingCurrency.amount = followingCurrencyCalculated(input);
-		callback(result);
+		result.followingCurrency.amount = parseFloat(followingCurrencyCalculated(input));
+
+		if (callback){
+			callback(result);
+		};
+
+		return result;
 };
 
 export default exchange;

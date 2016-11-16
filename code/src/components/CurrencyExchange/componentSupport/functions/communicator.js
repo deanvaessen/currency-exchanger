@@ -28,7 +28,7 @@ let exposed = new class {
 
 	exchange(input, callback) {
 		console.log('communicator_postLog: Fire');
-		console.log(input);
+		//console.log(input);
 
 		helpers.exchange(input, result => {
 			callback(result);

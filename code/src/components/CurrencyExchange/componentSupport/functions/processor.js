@@ -10,7 +10,7 @@
 * Dependencies
 */
 
-//import helpers from './../../../helpers/index';
+import helpers from './../../../../helpers/index';
 
 /**
  * Object
@@ -21,8 +21,8 @@
 let exposed = new class {
 
 	processCurrenciesAndRates(input, callback) {
-		console.log(input);
-		console.log(callback);
+		//console.log(input);
+		//console.log(callback);
 
 		// Draw up some arrays for present day
 			let currentCurrencyList = [];
@@ -78,7 +78,13 @@ let exposed = new class {
 			});
 
 			// Edit the array for the graph for the selected currencies
-			historicCurrencyListSelected = historicCurrencyListAll.slice();
+
+			//let historicCurrencyListSelected = historicCurrencyListAll.slice(0);
+			/*historicCurrencyListAll.forEach((item, index) => {
+				historicCurrencyListSelected.push(item);
+			});*/
+
+			historicCurrencyListSelected = helpers.generate.copyOfArray(historicCurrencyListAll);
 
 			historicCurrencyListSelected.forEach((item, index) => {
 				item.currencies.push({

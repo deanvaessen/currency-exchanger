@@ -6,6 +6,7 @@
 /**
  * { Dependencies }
  */
+const clone = require('clone');
 
  /**
  * { Function }
@@ -70,10 +71,31 @@
 		return id;
 	};
 
+	const copyOfArray = array => {
+/*		let i, copy;
+
+		if (Array.isArray(array)) {
+				copy = array.slice(0);
+				for (i = 0; i < copy.length; i++) {
+						copy[i] = copyOfArray(copy[i]);
+				}
+				return copy;
+		} else if (typeof array === 'object') {
+				throw Error('Cannot clone array containing an object!');
+		} else {
+				return array;
+		}*/
+
+		const clonedArray = clone(array);
+
+		return clonedArray;
+	};
+
 	return {
 		secondsSinceEpochFromDate : secondsSinceEpochFromDate,
 		colour : colour,
-		id : id
+		id : id,
+		copyOfArray : copyOfArray
 	};
  })();
 

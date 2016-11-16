@@ -31,24 +31,58 @@ import * as d3 from 'd3';
 
 		const chartElement = input.elements.chart,
 				legendElement = input.elements.legend.legend,
-				chartHeight = input.attributes.height;
+				smoothingElement = input.elements.smoothing,
+				sliderElement = input.elements.slider,
+				chartHeight = input.attributes.height,
+				parentElement = document.getElementById(input.elements.legend.legend).parentElement.parentElement.id;
 
+		let parentWidth = document.getElementById(parentElement).offsetWidth;
+
+
+		let clearingArray = [];
+
+		// yAxes
 		input.elements.axes.y.forEach((item, index) => {
 			const axisID = item,
 					axisName = 'yAxis' + index;
 
 			yAxes[axisName] = axisID;
+
+			if (input.attributes.clearPrevious) {
+				clearingArray.push(item);
+			}
 		});
 
-		// Get all the currencies
-		input.lineArray[0].currencies.forEach((item, index) => {
-			const currency = {
-				currency : item.currency,
-				rates : []
-			};
+		clearingArray.push(chartElement, legendElement, sliderElement, smoothingElement);
 
-			currencies.push(currency);
-		});
+		// Clear previous Graph
+		const clearPrevious = function () {
+			if (input.attributes.clearPrevious) {
+
+				// Clear all
+				clearingArray.forEach((item, index) => {
+					if (item.substring(0, 1) == '#'){
+						item = item.substring(1);
+					}
+					//console.log(item);
+					document.getElementById(item).innerHTML = '';
+				});
+
+				//Rickshaw._removeListeners();
+			}
+
+			// Get all the currencies
+			input.lineArray[0].currencies.forEach((item, index) => {
+				const currency = {
+					currency : item.currency,
+					rates : []
+				};
+
+				currencies.push(currency);
+			});
+		};
+
+		clearPrevious();
 
 		/**
 		 * { Currency array population }
@@ -147,20 +181,20 @@ import * as d3 from 'd3';
 
 		});
 
-		console.log(series);
+		//console.log(series);
 
 		/**
 		 * { Rickshaw rendering }
 		 * Now go on and render the thing
 		*/
+		const renderTheGraph = function () {
 			const graph = new Rickshaw.Graph({
 				element : document.querySelector(chartElement),
-				//width : 100%,
+				//width : parentWidth == 0 ? customGraphWidth : '',
 				height : chartHeight,
 				renderer : 'line',
 				series : series
 			});
-
 
 
 			new Rickshaw.Graph.HoverDetail({
@@ -242,7 +276,19 @@ import * as d3 from 'd3';
 			}
 
 			graph.render();
-			// needs jquery
+		};
+
+		renderTheGraph();
+
+		// This is to catch an issue where the parentWidth cannot be read
+		if (parentWidth === 0) {
+			clearPrevious();
+			const container = document.getElementById(parentElement).parentElement.getAttribute('id');
+
+			console.log(container);
+
+			setTimeout(function (){ renderTheGraph(); }, 0.001);
+		}
 
 	};
 

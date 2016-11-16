@@ -59,6 +59,7 @@ class CurrencyExchange extends React.Component {
 			selectCurrencyB : 'USD',
 			leadingCurrency : '',
 			currentCurrencyList : [],
+			currencyHasChanged : true,
 			historicCurrencyListAll : [],
 			historicCurrencyListSelected : [],
 			resultCurrencyExchange : '', //remove this one
@@ -92,7 +93,7 @@ class CurrencyExchange extends React.Component {
 						this.setState({historicCurrencyListAll : historicCurrencyListAll});
 						this.setState({historicCurrencyListSelected : historicCurrencyListSelected});
 
-						console.log(historicCurrencyListSelected);
+						//console.log(historicCurrencyListSelected);
 
 						/**
 						 * { Historic graph, all currencies }
@@ -119,7 +120,8 @@ class CurrencyExchange extends React.Component {
 								slider : 'chartHistoryAll__slider'
 							},
 							attributes : {
-								height : 500
+								height : 500,
+								clearPrevious : false
 							}
 						};
 
@@ -143,9 +145,6 @@ class CurrencyExchange extends React.Component {
 	mutateComponent(payload, stateObject){
 		console.log('CurrencyExchange receives result:');
 		console.log(payload);
-
-		// Show the results block in the view
-		this.shouldHideWrittenOutcome = false;
 
 		// Define the view data
 		const leadingCurrency = payload.leadingCurrency.currency,
@@ -219,6 +218,7 @@ class CurrencyExchange extends React.Component {
 															const leadingRecorder = document.getElementById(elID);
 
 															leadingRecorder.value = 'currencyA';
+															this.setState({ currencyHasChanged : true});
 															this.mockEvent(leadingRecorder, 'input');
 														}}
 														onKeyUp={
@@ -264,6 +264,7 @@ class CurrencyExchange extends React.Component {
 															const leadingRecorder = document.getElementById(elID);
 
 															leadingRecorder.value = 'currencyB';
+															this.setState({ currencyHasChanged : true});
 															this.mockEvent(leadingRecorder, 'input');
 														}}
 														onKeyUp={
@@ -386,14 +387,22 @@ const formousOptions = {
 						errorText : 'Could you give me a valid numeric amount?'
 					},
 					test(value, fields) {
+
 						if (fields.currencyA || fields.currencyB){
 							const thisCurrency = 'currencyA',
-							otherCurrency = 'currencyB';
+							otherCurrency = 'currencyB',
+							otherValue = fields[otherCurrency].value;
 
-							let filteredValue;
+							console.log(otherValue);
+
+
+							let filteredValue, filteredValueOther;
 
 							filteredValue = helpers.mutate.typography.removeWhitespace(value);
 							filteredValue = helpers.mutate.typography.replaceCommaWithDot(value);
+
+							filteredValueOther = helpers.mutate.typography.removeWhitespace(otherValue);
+							filteredValueOther = helpers.mutate.typography.replaceCommaWithDot(otherValue);
 
 
 							// First we check which the leading currency is so that we know if we can disregard this test or not
@@ -405,8 +414,9 @@ const formousOptions = {
 							} else if (leadingCurrency === thisCurrency) {
 								// Did you input a proper numeric value?
 								const isNumeric = helpers.validate.content.isNumeric(filteredValue);
+								const otherIsNumeric = helpers.validate.content.isNumeric(otherValue);
 
-								if (filteredValue == '' || !isNumeric) {
+								if ((filteredValue == '' || !isNumeric) && (filteredValueOther == '' || !otherIsNumeric)) {
 									return false;
 								}
 								return true;
@@ -426,13 +436,19 @@ const formousOptions = {
 					test(value, fields) {
 						if (fields.currencyA || fields.currencyB){
 							const thisCurrency = 'currencyB',
-							otherCurrency = 'currencyA';
+							otherCurrency = 'currencyA',
+							otherValue = fields[otherCurrency].value;
 
-							let filteredValue;
+							console.log(otherValue);
+
+
+							let filteredValue, filteredValueOther;
 
 							filteredValue = helpers.mutate.typography.removeWhitespace(value);
 							filteredValue = helpers.mutate.typography.replaceCommaWithDot(value);
 
+							filteredValueOther = helpers.mutate.typography.removeWhitespace(otherValue);
+							filteredValueOther = helpers.mutate.typography.replaceCommaWithDot(otherValue);
 
 							// First we check which the leading currency is so that we know if we can disregard this test or not
 							const leadingCurrency = fields.formousTestLeadingCurrency.value;
@@ -443,8 +459,9 @@ const formousOptions = {
 							} else if (leadingCurrency === thisCurrency) {
 								// Did you input a proper numeric value?
 								const isNumeric = helpers.validate.content.isNumeric(filteredValue);
+								const otherIsNumeric = helpers.validate.content.isNumeric(otherValue);
 
-								if (filteredValue == '' || !isNumeric) {
+								if ((filteredValue == '' || !isNumeric) && (filteredValueOther == '' || !otherIsNumeric)) {
 									return false;
 								}
 								return true;

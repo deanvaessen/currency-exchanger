@@ -96,6 +96,10 @@ const index = (function () {
 
 				id : () => {
 					return GenerationHelpers.id();
+				},
+
+				copyOfArray : array => {
+					return GenerationHelpers.copyOfArray(array);
 				}
 			};
 
