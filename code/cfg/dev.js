@@ -5,6 +5,8 @@ let webpack = require('webpack');
 let baseConfig = require('./base');
 let defaultSettings = require('./defaults');
 
+require('jquery');
+
 // Add needed plugins here
 let BowerWebpackPlugin = require('bower-webpack-plugin');
 
@@ -21,7 +23,11 @@ let config = Object.assign({}, baseConfig, {
     new webpack.NoErrorsPlugin(),
     new BowerWebpackPlugin({
       searchResolveModulesDirectories: false
-    })
+    }),
+    new webpack.ProvidePlugin({
+         $: "jquery",
+         jQuery: "jquery"
+     })
   ],
   module: defaultSettings.getDefaultModules()
 });

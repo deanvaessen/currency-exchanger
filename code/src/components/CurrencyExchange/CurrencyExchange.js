@@ -11,7 +11,7 @@
 
 require('./CurrencyExchange.scss');
 require('./RickshawHistoryAll.scss');
-//require('./RickshawHistorySelected.scss');
+require('./RickshawHistorySelected.scss');
 require('./RickshawShared.scss');
 
 import React from 'react';
@@ -109,7 +109,12 @@ class CurrencyExchange extends React.Component {
 										'chartHistoryAll__yAxis2',
 										'chartHistoryAll__yAxis3',
 										'chartHistoryAll__yAxis4'
-									]
+									],
+									scales : {
+										y : {
+											singleScale : false
+										}
+									}
 								},
 								chart : '#chartHistoryAll',
 								smoothing : 'chartHistoryAll__smoother',
@@ -324,7 +329,6 @@ class CurrencyExchange extends React.Component {
 									</h4>
 
 									<div id="CurrencyExchange__historyChartSelected" className="CurrencyExchange__resultbox indent">
-										<div id="chartHistorySelected__yAxis1"></div>
 										<div id="chartHistorySelected__yAxis0"></div>
 										<div id="chartHistorySelected"></div>
 										<div id="chartHistorySelected__legendContainer">

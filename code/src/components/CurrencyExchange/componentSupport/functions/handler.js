@@ -37,9 +37,6 @@ let exposed = new class {
 	}
 
 	submit(formStatus, fields) {
-		//console.log(this.state);
-		// Show the results block in the view
-		this.shouldHideWrittenOutcome = false;
 		// Get state and run some filters and tests to find and fix issues
 		const leadingCurrencySelector = this.state.leadingCurrency,
 			leadingCurrency = (leadingCurrencySelector === 'valueCurrencyA' ? this.state.selectCurrencyA : this.state.selectCurrencyB),
@@ -75,9 +72,15 @@ let exposed = new class {
 			return;
 		}
 
+		if (fields.currencyA.value == '' && fields.currencyB.value == ''){
+			return;
+		}
+
+		// Show the results block in the view
+		this.shouldHideWrittenOutcome = false;
+
 		this.setState({ currencyHasChanged : false});
 
-		console.log(followingCurrencyValue);
 
 		// No errors found, continue.
 
@@ -126,7 +129,6 @@ let exposed = new class {
 			/*eslint-disable */
 
 			let historicCurrencyListSelected = helpers.generate.copyOfArray(this.state.historicCurrencyListSelected);
-			//console.log(historicCurrencyListSelected);
 
 			// Throw out all the currencies we don't need
 				//For each date
@@ -137,14 +139,10 @@ let exposed = new class {
 					// Throw out the currencies we don't need
 					item.currencies.forEach((item, index) => {
 						if (item.currency !== followingCurrency && item.currency !== leadingCurrency) {
-							//console.log('removing', item.currency);
-								//historicCurrencyListSelected[dateIndex].currencies.splice(index, 1);
 
 								removeFromArrayIndexes.push(index);
-								//console.log(index)
 
 						} else {
-							//console.log(item, index, followingCurrency);
 						}
 					});
 
@@ -153,9 +151,7 @@ let exposed = new class {
 					}
 				});
 
-			//console.log(historicCurrencyListSelected);
 			// Now updated the rates of the currency (but not if it leading and following are equal because then take Euro rate (default))
-			console.log(leadingCurrency !== followingCurrency);
 			if (leadingCurrency !== followingCurrency) {
 				let exchangeObjectSelected = {
 					leadingCurrency : {
@@ -170,35 +166,21 @@ let exposed = new class {
 					}
 				};
 
-				//console.log('hey');
-				console.log(historicCurrencyListSelected);
 				historicCurrencyListSelected.forEach((item, index) => {
 					item.currencies.forEach((item, index) => {
-						//console.log(item.currency, leadingCurrency)
-						//console.log(item.rate)
 
 						if (item.currency == leadingCurrency) {
 							exchangeObjectSelected.leadingCurrency.rate = item.rate;
-							console.log('leading!');
-							console.log(item.rate);
 						} else if (item.currency == followingCurrency) {
-							console.log('following!');
-							console.log(item.rate);
 							exchangeObjectSelected.followingCurrency.rate = item.rate;
 						}
 
-						console.log(exchangeObject);
-
 						communicator.exchange(exchangeObjectSelected, (result) => {
-							console.log('deaaaaaaaaaaaaaaaaan');
-							console.log(result.followingCurrency.amount);
 							item.rate = result.followingCurrency.amount;
-							//historicCurrencyListSelected[dateIndexSelected].currencies[index].rate = result.followingCurrency.amount;
 						});
 					});
 				});
 			}
-							//console.log(result.followingCurrency.amount);
 
 			// Throw out the leadingCurrency because we don't need it for the graph
 				//For each date
@@ -219,8 +201,6 @@ let exposed = new class {
 					}
 				});
 
-			console.log(historicCurrencyListSelected);
-
 			// Call a render
 			const graphHistorySelected = {
 				lineArray : historicCurrencyListSelected,
@@ -228,8 +208,12 @@ let exposed = new class {
 					axes : {
 						y : [
 							'chartHistorySelected__yAxis0',
-							'chartHistorySelected__yAxis1'
-						]
+						],
+						scales : {
+							y : {
+								singleScale : true
+							}
+						}
 					},
 					chart : '#chartHistorySelected',
 					smoothing : 'chartHistorySelected__smoother',

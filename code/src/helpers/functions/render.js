@@ -10,6 +10,7 @@
 import generate from './generator';
 import Rickshaw from 'Rickshaw';
 import * as d3 from 'd3';
+import $ from 'jquery';
 
 
  /**
@@ -29,14 +30,17 @@ import * as d3 from 'd3';
 
 		};
 
-		const chartElement = input.elements.chart,
+		let chartElement = input.elements.chart,
 				legendElement = input.elements.legend.legend,
 				smoothingElement = input.elements.smoothing,
 				sliderElement = input.elements.slider,
 				chartHeight = input.attributes.height,
+				singleScale,
+				singleScaleParameters,
 				parentElement = document.getElementById(input.elements.legend.legend).parentElement.parentElement.id;
 
 		let parentWidth = document.getElementById(parentElement).offsetWidth;
+
 
 
 		let clearingArray = [];
@@ -51,6 +55,10 @@ import * as d3 from 'd3';
 			if (input.attributes.clearPrevious) {
 				clearingArray.push(item);
 			}
+
+			if (input.elements.axes.scales.y.singleScale) {
+				singleScale = true;
+			}
 		});
 
 		clearingArray.push(chartElement, legendElement, sliderElement, smoothingElement);
@@ -61,14 +69,16 @@ import * as d3 from 'd3';
 
 				// Clear all
 				clearingArray.forEach((item, index) => {
-					if (item.substring(0, 1) == '#'){
-						item = item.substring(1);
+					if (item.substring(0, 1) !== '#'){
+						item = '#' + item;
 					}
-					//console.log(item);
-					document.getElementById(item).innerHTML = '';
-				});
 
-				//Rickshaw._removeListeners();
+					// Below has to be done to fix an issue with Rickshaw event listeners (bug in Rickshaw itself)
+					$(item).empty();
+					let newGraph = $(item).clone();
+
+					$(item).replaceWith(newGraph);
+				});
 			}
 
 			// Get all the currencies
@@ -100,6 +110,7 @@ import * as d3 from 'd3';
 					item.currencies.forEach((item, index) => {
 
 						if (currency === item.currency) {
+
 							const rateAndDate = {
 								date : dateStamp, // date
 								rate : item.rate // rate
@@ -117,11 +128,12 @@ import * as d3 from 'd3';
 		 * Create an array that Rickshaw understands
 		*/
 		// First define some scales
-		const largeScale = d3.scaleLinear().domain([14000, 15500]).range([420, 500]).nice();
-		const mediumScale = d3.scaleLinear().domain([130, 1400]).range([290, 400]).nice();
-		const smallScale = d3.scaleLinear().domain([16, 129.9]).range([170, 290]).nice();
-		const verySmallScale = d3.scaleLinear().domain([3, 15.9]).range([100, 170]).nice();
-		const smallestScale = d3.scaleLinear().domain([0, 2.9]).range([0, 100]).nice();
+			// For the 'all currencies' graph
+			const largeScaleAll = d3.scaleLinear().domain([14000, 15500]).range([420, 500]).nice();
+			const mediumScaleAll = d3.scaleLinear().domain([130, 1400]).range([290, 400]).nice();
+			const smallScaleAll = d3.scaleLinear().domain([16, 129.9]).range([170, 290]).nice();
+			const verySmallScaleAll = d3.scaleLinear().domain([3, 15.9]).range([100, 170]).nice();
+			const smallestScaleAll = d3.scaleLinear().domain([0, 2.9]).range([0, 100]).nice();
 
 		let series = [];
 
@@ -132,7 +144,12 @@ import * as d3 from 'd3';
 
 			// Get all the X and Y values for a certain currency
 			item.rates.forEach((item, index) => {
+
 				const rate = parseFloat(item.rate);
+
+				if (isNaN(rate)){
+					return;
+				}
 
 				let dateObject = item.date.split('-');
 
@@ -162,19 +179,24 @@ import * as d3 from 'd3';
 
 			// Different scales for different items
 			// Find the largest item
+			const smallestRate = Math.min.apply(0, yArray);
 			const largestRate = Math.max.apply(0, yArray);
 
 			// Take a scale to match it
-			if (largestRate >= 1400) {
-				plottedCurrency.scale = largeScale;
-			} else if (largestRate >= 130 && largestRate < 1400) {
-				plottedCurrency.scale = mediumScale;
-			} else if (largestRate >= 16 && largestRate < 130) {
-				plottedCurrency.scale = smallScale;
-			} else if (largestRate >= 3 && largestRate < 16) {
-				plottedCurrency.scale = verySmallScale;
-			} else if (largestRate < 3) {
-				plottedCurrency.scale = smallestScale;
+			if (singleScale) {
+				singleScaleParameters = d3.scaleLinear().domain([smallestRate, largestRate]).range([50, chartHeight - 100 ]).nice();
+			} else {
+				if (largestRate >= 1400) {
+					plottedCurrency.scale = largeScaleAll;
+				} else if (largestRate >= 130 && largestRate < 1400) {
+					plottedCurrency.scale = mediumScaleAll;
+				} else if (largestRate >= 16 && largestRate < 130) {
+					plottedCurrency.scale = smallScaleAll;
+				} else if (largestRate >= 3 && largestRate < 16) {
+					plottedCurrency.scale = verySmallScaleAll;
+				} else if (largestRate < 3) {
+					plottedCurrency.scale = smallestScaleAll;
+				}
 			}
 
 			series.push(plottedCurrency);
@@ -193,7 +215,8 @@ import * as d3 from 'd3';
 				//width : parentWidth == 0 ? customGraphWidth : '',
 				height : chartHeight,
 				renderer : 'line',
-				series : series
+				series : series,
+				padding : singleScale ? {top : 1} : ''
 			});
 
 
@@ -213,65 +236,68 @@ import * as d3 from 'd3';
 			if (yAxes.yAxis4) {
 				new Rickshaw.Graph.Axis.Y.Scaled({
 						element : document.getElementById(yAxes.yAxis4),
-										graph : graph,
-										scale : largeScale,
-										orientation : 'left',
-										tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
-											return ((y / 100) * 2) / 1000 + 'K ' + '€';
-										},
-										height : 80
+						graph : graph,
+						scale : largeScaleAll,
+						orientation : 'left',
+						tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
+							return ((y / 100) * 2) / 1000 + 'K ' + '€';
+						},
+						height : 80
 				});
 			}
 
 			if (yAxes.yAxis3) {
 				new Rickshaw.Graph.Axis.Y.Scaled({
 						element : document.getElementById(yAxes.yAxis3),
-										graph : graph,
-										scale : mediumScale,
-										orientation : 'right',
-										tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
-											return parseInt((y / 1000) / 1.995) + '€';
-										},
-										height : 110
+						graph : graph,
+						scale : mediumScaleAll,
+						orientation : 'right',
+						tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
+							return parseInt((y / 1000) / 1.995) + '€';
+						},
+						height : 110
 				});
 			}
 
 			if (yAxes.yAxis2) {
 				new Rickshaw.Graph.Axis.Y.Scaled({
 						element : document.getElementById(yAxes.yAxis2),
-										graph : graph,
-										scale : smallScale,
-										tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
-											return (y / 1000) + '€';
-										},
-										orientation : 'left',
-										height : 120
+						graph : graph,
+						scale : smallScaleAll,
+						tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
+							return (y / 1000) + '€';
+						},
+						orientation : 'left',
+						height : 120
 				});
 			}
 
 			if (yAxes.yAxis1) {
 				new Rickshaw.Graph.Axis.Y.Scaled({
 						element : document.getElementById(yAxes.yAxis1),
-										graph : graph,
-										scale : verySmallScale,
-										tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
-											return (y / 1000) + '€';
-										},
-										orientation : 'right',
-										height : 70
+						graph : graph,
+						scale : verySmallScaleAll,
+						tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
+							return (y / 1000) + '€';
+						},
+						orientation : 'right',
+						height : 70
 				});
 			}
 
 			if (yAxes.yAxis0) {
 				new Rickshaw.Graph.Axis.Y.Scaled({
 						element : document.getElementById(yAxes.yAxis0),
-										graph : graph,
-										scale : smallestScale,
-										tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
-											return ((y / 1000) * 1.2).toPrecision(2) + '€';
-										},
-										orientation : 'left',
-										height : 100
+						graph : graph,
+						scale : singleScale ? singleScaleParameters : smallestScaleAll,
+						tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
+							if (singleScale) {
+								return y.toPrecision(3) + '€';
+							}
+							return ((y / 1000) * 1.2).toPrecision(2) + '€';
+						},
+						orientation : 'left',
+						height : singleScale ? chartHeight : 100
 				});
 			}
 
@@ -283,10 +309,6 @@ import * as d3 from 'd3';
 		// This is to catch an issue where the parentWidth cannot be read
 		if (parentWidth === 0) {
 			clearPrevious();
-			const container = document.getElementById(parentElement).parentElement.getAttribute('id');
-
-			console.log(container);
-
 			setTimeout(function (){ renderTheGraph(); }, 0.001);
 		}
 

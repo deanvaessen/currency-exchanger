@@ -24,12 +24,7 @@ let exchange = (input, callback) => {
 	 * Support functions for main function down the page
 	 */
 
-		// Function specific helpers
-/*		const helpers = {
-			reverse(payload) {
-				return payload.reverse();
-			},
-		};*/
+	// Sparkles
 
 
 	/**
@@ -37,15 +32,13 @@ let exchange = (input, callback) => {
 	* Process the input and exchanges the requested currencies
 	*/
 
-		// 0.
-		console.log(input);
-
+		// The function that does the actual calculation
 		const followingCurrencyCalculated = function (input) {
 
 			const leadingCurrencyAmount = input.leadingCurrency.amount,
-				leadingCurrencyRate = input.leadingCurrency.rate,
+				leadingCurrencyRate = parseFloat(input.leadingCurrency.rate),
 				//followingCurrencyAmount = input.leadingCurrency.amount,
-				followingCurrencyRate = input.followingCurrency.rate;
+				followingCurrencyRate = parseFloat(input.followingCurrency.rate);
 
 
 			// Calculate to euros
@@ -53,10 +46,7 @@ let exchange = (input, callback) => {
 				const leadingCurrencyInEuros = leadingCurrencyAmount / leadingCurrencyRate;
 					// followingCurrencyInEuros = followingCurrencyAmount / followingCurrencyRate;
 
-			console.log(leadingCurrencyInEuros, followingCurrencyRate);
-			console.log(leadingCurrencyInEuros, leadingCurrencyRate);
 			// Calculate between the currencies
-			console.log(leadingCurrencyInEuros * followingCurrencyRate);
 			return (leadingCurrencyInEuros * followingCurrencyRate);
 		};
 

@@ -5,3 +5,4 @@
 15/11/2016 - 0.0.5: Rickshaw historic overview fixes. This is a chart I made to learn Rickshaw.
 16/11/2016 - 0.0.6: Rickshaw selected currencies base. Chart as per assignment.
 17/11/2016 - 0.0.7: Rickshaw selected currencies refinement.
+18/11/2016 - 0.0.8: Rickshaw selected currencies refinement.

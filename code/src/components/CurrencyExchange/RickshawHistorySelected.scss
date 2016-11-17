@@ -12,11 +12,12 @@
  /**
 * { Styles }
 */
-#CurrencyExchange__historyChartAll {
+#CurrencyExchange__historyChartSelected {
+
 	position: relative;
 
 	/* Graph */
-		#chartHistoryAll {
+		#chartHistorySelected {
 			//left: 50px;
 			//width: 1000px;
 			width: 95%;
@@ -24,64 +25,21 @@
 			@include rem(margin, 0 0 120px 22px);
 		}
 
-		#chartHistoryAll__yAxis4, #chartHistoryAll__yAxis3, #chartHistoryAll__yAxis2, #chartHistoryAll__yAxis1, #chartHistoryAll__yAxis0 {
-			overflow: hidden;
-		}
-
-		// large scale
-		#chartHistoryAll__yAxis4 {
-			position: absolute;
-			left: 98%;
-			width: 40px;
-			bottom: 420px;
-			height: 80px;
-		}
-
-		// medium scale
-		#chartHistoryAll__yAxis3 {
-			position: absolute;
-			left: 3%;
-			width: 40px;
-			bottom: 310px;
-			height: 80px;
-
-			svg {
-				position: relative;
-				top: 62px;
-			}
-		}
-
-		// small scale
-		#chartHistoryAll__yAxis2 {
-			position: absolute;
-			left: 98%;
-			width: 40px;
-			bottom: 170px;
-			height: 120px;
-		}
-
-		// very small scale
-		#chartHistoryAll__yAxis1 {
-			position: absolute;
-			left: 3%;
-			bottom: 67px;
-			width: 40px;
-			height: 70px;
-		}
-
-		// smallest scale
-		#chartHistoryAll__yAxis0 {
+		#chartHistorySelected__yAxis0 {
 			position: absolute;
 			width: 40px;
 			bottom: 0;
 			left: 98%;
-			height: 70px;
+			height: 300px;
+			overflow: visible;
+
+			svg {
+				overflow: visible;
+			}
 		}
 
 	/*Legend*/
-		#chartHistoryAll__legendContainer {
-			//height: 600px;
-			//display: none !important;
+		#chartHistorySelected__legendContainer {
 			position:absolute;
 		}
 
