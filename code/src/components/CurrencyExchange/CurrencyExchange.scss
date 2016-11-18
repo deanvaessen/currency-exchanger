@@ -89,12 +89,17 @@
 
 				.CurrencyExchange__currencyAmount {
 					display: inline-block;
-					@include rem(margin, 0 20px);
+					//@include rem(margin, 0 20px);
 
 					p {
 						text-align: center;
 						@include rem(margin, 20px 0 0 0);
 						display: none;
+					}
+
+					div {
+						@include rem(margin, 20px auto);
+						text-align: center;
 					}
 				}
 			}

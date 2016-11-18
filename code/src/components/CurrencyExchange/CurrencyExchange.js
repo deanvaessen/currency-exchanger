@@ -47,8 +47,12 @@ class CurrencyExchange extends React.Component {
 			this.handleKeyUp = handle.keyUp.bind(this);
 			this.mutateComponent = this.mutateComponent.bind(this);
 			this.onChangeDropdown = handle.onChangeDropdown.bind(this);
+			this.changeCurrencyAmount = handle.changeCurrencyAmount.bind(this);
 			this.mapCurrencies = this.mapCurrencies.bind(this);
 			this.mockEvent = componentFunctions.handle.mockEvent.bind(this);
+
+		// Interaction
+		this.stopScroll = helpers.interact.disableScrollingTimer;
 
 		// Vars
 		this.shouldHideWrittenOutcome = true;
@@ -109,12 +113,7 @@ class CurrencyExchange extends React.Component {
 										'chartHistoryAll__yAxis2',
 										'chartHistoryAll__yAxis3',
 										'chartHistoryAll__yAxis4'
-									],
-									scales : {
-										y : {
-											singleScale : false
-										}
-									}
+									]
 								},
 								chart : '#chartHistoryAll',
 								smoothing : 'chartHistoryAll__smoother',
@@ -130,7 +129,7 @@ class CurrencyExchange extends React.Component {
 							}
 						};
 
-						helpers.render.graph(graphHistoryAll);
+					helpers.render.graph(graphHistoryAll);
 				});
 			});
 	}
@@ -180,12 +179,14 @@ class CurrencyExchange extends React.Component {
 		const messageA = 'You selected ' + this.state.selectCurrencyA,
 			messageB = 'You selected ' + this.state.selectCurrencyB;
 
+		//const testvar = this;
+
 		return (
 		<div className="CurrencyExchange__outerContainer">
 			<div className="CurrencyExchange__title"><h1>Exchange me, please</h1></div>
 			<div className="CurrencyExchange__innerContainer">
 
-				<form onSubmit={formSubmit(this.handleSubmit)}>
+				<form onSubmit={formSubmit(this.handleSubmit, event)}>
 					<div className="CurrencyExchange__form">
 						<div className="CurrencyExchange__input">
 							<div className="CurrencyExchange__logMessage" >
@@ -216,8 +217,9 @@ class CurrencyExchange extends React.Component {
 														className="CurrencyExchange__inputLogMessage"
 														value={currencyA.value}
 														onKeyDown={(event) => {
-															console.log();
+
 															this.setState({leadingCurrency : 'valueCurrencyA'});
+
 															// Mock an event so that formous knows which the leadingCurrency is
 															const elID = 'CurrencyExchange__formousTestLeadingCurrency';
 															const leadingRecorder = document.getElementById(elID);
@@ -225,10 +227,11 @@ class CurrencyExchange extends React.Component {
 															leadingRecorder.value = 'currencyA';
 															this.setState({ currencyHasChanged : true});
 															this.mockEvent(leadingRecorder, 'input');
+
+															//event.preventDefault();
+															//this.changeCurrencyAmount('currencyA', 'valueCurrencyA');
 														}}
-														onKeyUp={
-															formSubmit(this.handleSubmit)
-														}
+														onKeyUp={formSubmit(this.handleSubmit)}
 														{ ...currencyA.events }
 													/>
 													<p>{messageA}</p>
@@ -261,7 +264,6 @@ class CurrencyExchange extends React.Component {
 														className="CurrencyExchange__inputLogMessage"
 														value={currencyB.value}
 														onKeyDown={(event) => {
-
 															this.setState({leadingCurrency : 'valueCurrencyB'});
 
 															// Mock an event so that formous knows which the leadingCurrency is
@@ -271,6 +273,7 @@ class CurrencyExchange extends React.Component {
 															leadingRecorder.value = 'currencyB';
 															this.setState({ currencyHasChanged : true});
 															this.mockEvent(leadingRecorder, 'input');
+
 														}}
 														onKeyUp={
 															formSubmit(this.handleSubmit)
@@ -397,9 +400,6 @@ const formousOptions = {
 							otherCurrency = 'currencyB',
 							otherValue = fields[otherCurrency].value;
 
-							console.log(otherValue);
-
-
 							let filteredValue, filteredValueOther;
 
 							filteredValue = helpers.mutate.typography.removeWhitespace(value);
@@ -442,9 +442,6 @@ const formousOptions = {
 							const thisCurrency = 'currencyB',
 							otherCurrency = 'currencyA',
 							otherValue = fields[otherCurrency].value;
-
-							console.log(otherValue);
-
 
 							let filteredValue, filteredValueOther;
 

@@ -14,9 +14,16 @@ const clone = require('clone');
  const index = (function () {
 
 	/**
-	 * { content }
-	 * Support helpers for content validation
+	 * { Generators }
+	 *
 	*/
+
+	const secondsSinceEpoch = () => {
+		const secondSinceEpoch = Math.floor(Date.now() / 1000);
+
+		return secondSinceEpoch;
+	};
+
 	const secondsSinceEpochFromDate = input => {
 
 		// Create UTC
@@ -72,26 +79,13 @@ const clone = require('clone');
 	};
 
 	const copyOfArray = array => {
-/*		let i, copy;
-
-		if (Array.isArray(array)) {
-				copy = array.slice(0);
-				for (i = 0; i < copy.length; i++) {
-						copy[i] = copyOfArray(copy[i]);
-				}
-				return copy;
-		} else if (typeof array === 'object') {
-				throw Error('Cannot clone array containing an object!');
-		} else {
-				return array;
-		}*/
-
 		const clonedArray = clone(array);
 
 		return clonedArray;
 	};
 
 	return {
+		secondsSinceEpoch : secondsSinceEpoch,
 		secondsSinceEpochFromDate : secondsSinceEpochFromDate,
 		colour : colour,
 		id : id,
@@ -100,7 +94,7 @@ const clone = require('clone');
  })();
 
 
- /**
-	* Export
-	*/
+/**
+* Export
+*/
  module.exports = index;

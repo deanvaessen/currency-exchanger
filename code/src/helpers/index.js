@@ -13,6 +13,7 @@ import ConversionHelpers from './functions/conversion';
 import ExchangeHelpers from './functions/exchange';
 import RenderHelpers from './functions/render';
 import GenerationHelpers from './functions/generator';
+import InteractionHelpers from './functions/interaction';
 
 /**
 * { Function }
@@ -86,6 +87,10 @@ const index = (function () {
 			};
 
 			const generate = {
+				secondsSinceEpoch : function (input){
+					return GenerationHelpers.secondsSinceEpoch(input);
+				},
+
 				secondsSinceEpochFromDate : function (input){
 					return GenerationHelpers.secondsSinceEpochFromDate(input);
 				},
@@ -103,6 +108,12 @@ const index = (function () {
 				}
 			};
 
+			const interact = {
+				disableScrollingTimer : function (input){
+					return InteractionHelpers.disableScrollingTimer(input);
+				}
+			};
+
 			return {
 				mutate : mutate,
 				validate : validate,
@@ -110,7 +121,8 @@ const index = (function () {
 				convert : convert,
 				exchange : exchange,
 				render : render,
-				generate : generate
+				generate : generate,
+				interact : interact
 			};
 })();
 

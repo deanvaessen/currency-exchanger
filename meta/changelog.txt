@@ -3,6 +3,7 @@
 13/11/2016 - 0.0.3: Rickshaw in progress, chart plotted.
 14/11/2016 - 0.0.4: Rickshaw polish.
 15/11/2016 - 0.0.5: Rickshaw historic overview fixes. This is a chart I made to learn Rickshaw.
-16/11/2016 - 0.0.6: Rickshaw selected currencies base. Chart as per assignment.
-17/11/2016 - 0.0.7: Rickshaw selected currencies refinement.
-18/11/2016 - 0.0.8: Rickshaw selected currencies refinement.
+16/11/2016 - 0.0.6: Rickshaw selected currencies base brought in. Chart as per assignment.
+17/11/2016 - 0.0.7: Rickshaw selected currencies refinements.
+18/11/2016 - 0.0.8: Rickshaw selected currencies refinements.
+19/11/2016 - 0.0.9: Fixed error text amount input positioning, Rickshaw render function improvements. Spent time working around seemingly limitations with my Form library (jump on submit that I can't seem to hook into properly, as well as taking some function logic out of the component's render() which seems to cause issues with tests.

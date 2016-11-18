@@ -19,51 +19,55 @@ import $ from 'jquery';
  const index = (function () {
 
 	/**
-	 * { graph }
+	 * { Graph }
 	 * A functionfor graph rendering
 	*/
 	const graph = input => {
 
 		// Define variables
-		let currencies = [],
-			yAxes = {
 
-		};
+			// Page Elements
+			let chartElement = input.elements.chart,
+					legendElement = input.elements.legend.legend,
+					smoothingElement = input.elements.smoothing,
+					sliderElement = input.elements.slider,
+					chartHeight = input.attributes.height;
 
-		let chartElement = input.elements.chart,
-				legendElement = input.elements.legend.legend,
-				smoothingElement = input.elements.smoothing,
-				sliderElement = input.elements.slider,
-				chartHeight = input.attributes.height,
-				singleScale,
+			// Variables for Rickshaw functions
+			let parentWidth,
+				clearingArray = [],
+				hasSingleScale,
 				singleScaleParameters,
-				parentElement = document.getElementById(input.elements.legend.legend).parentElement.parentElement.id;
+				parentElement = document.getElementById(input.elements.legend.legend).parentElement.parentElement.id,
+				currencies = [],
+				yAxes = {},
+				series = [];
 
-		let parentWidth = document.getElementById(parentElement).offsetWidth;
+			// yAxes
+			input.elements.axes.y.forEach((item, index) => {
+				const axisID = item,
+						axisName = 'yAxis' + index;
 
+				yAxes[axisName] = axisID;
 
+				if (input.attributes.clearPrevious) {
+					clearingArray.push(item);
+				}
 
-		let clearingArray = [];
+			});
 
-		// yAxes
-		input.elements.axes.y.forEach((item, index) => {
-			const axisID = item,
-					axisName = 'yAxis' + index;
-
-			yAxes[axisName] = axisID;
-
-			if (input.attributes.clearPrevious) {
-				clearingArray.push(item);
-			}
-
-			if (input.elements.axes.scales.y.singleScale) {
-				singleScale = true;
-			}
-		});
+		// See if we need only one scale
+		if (Object.keys(yAxes).length == 1) {
+			hasSingleScale = true;
+		}
 
 		clearingArray.push(chartElement, legendElement, sliderElement, smoothingElement);
 
-		// Clear previous Graph
+		/**
+		 * { Clear previous }
+		 * Should we clear the previous graph?
+		*/
+
 		const clearPrevious = function () {
 			if (input.attributes.clearPrevious) {
 
@@ -80,7 +84,16 @@ import $ from 'jquery';
 					$(item).replaceWith(newGraph);
 				});
 			}
+		};
 
+		if (input.attributes.clearPrevious){
+			clearPrevious();
+		}
+
+		/**
+		 * { Currency array population }
+		 * Populate the currencies array with all the relevant data (rate per date)
+		*/
 			// Get all the currencies
 			input.lineArray[0].currencies.forEach((item, index) => {
 				const currency = {
@@ -90,14 +103,7 @@ import $ from 'jquery';
 
 				currencies.push(currency);
 			});
-		};
 
-		clearPrevious();
-
-		/**
-		 * { Currency array population }
-		 * Populate the currencies array with all the relevant data (rate per date)
-		*/
 			// For each currency
 			currencies.forEach((item, index) => {
 				const currencyIndex = index,
@@ -127,7 +133,8 @@ import $ from 'jquery';
 		 * { Rickshaw data array }
 		 * Create an array that Rickshaw understands
 		*/
-		// First define some scales
+
+		// Define some scales
 			// For the 'all currencies' graph
 			const largeScaleAll = d3.scaleLinear().domain([14000, 15500]).range([420, 500]).nice();
 			const mediumScaleAll = d3.scaleLinear().domain([130, 1400]).range([290, 400]).nice();
@@ -135,8 +142,7 @@ import $ from 'jquery';
 			const verySmallScaleAll = d3.scaleLinear().domain([3, 15.9]).range([100, 170]).nice();
 			const smallestScaleAll = d3.scaleLinear().domain([0, 2.9]).range([0, 100]).nice();
 
-		let series = [];
-
+		// Then see how to treat each currency
 		currencies.forEach((item, index) => {
 			const currency = item.currency;
 			let data = [];
@@ -177,13 +183,12 @@ import $ from 'jquery';
 				name : currency
 			};
 
-			// Different scales for different items
-			// Find the largest item
+			// Find the largest and smallest items
 			const smallestRate = Math.min.apply(0, yArray);
 			const largestRate = Math.max.apply(0, yArray);
 
 			// Take a scale to match it
-			if (singleScale) {
+			if (hasSingleScale) {
 				singleScaleParameters = d3.scaleLinear().domain([smallestRate, largestRate]).range([50, chartHeight - 100 ]).nice();
 			} else {
 				if (largestRate >= 1400) {
@@ -210,13 +215,18 @@ import $ from 'jquery';
 		 * Now go on and render the thing
 		*/
 		const renderTheGraph = function () {
+
+			// Read the width of the container
+			parentWidth = document.getElementById(parentElement).offsetWidth;
+
+			// Define the graph
 			const graph = new Rickshaw.Graph({
 				element : document.querySelector(chartElement),
 				//width : parentWidth == 0 ? customGraphWidth : '',
 				height : chartHeight,
 				renderer : 'line',
 				series : series,
-				padding : singleScale ? {top : 1} : ''
+				padding : hasSingleScale ? {top : 1} : ''
 			});
 
 
@@ -224,10 +234,12 @@ import $ from 'jquery';
 				graph : graph
 			});
 
-			new Rickshaw.Graph.Legend({
-				graph : graph,
-				element : document.getElementById(legendElement)
-			});
+			if (parentWidth !== 0) {
+				new Rickshaw.Graph.Legend({
+					graph : graph,
+					element : document.getElementById(legendElement)
+				});
+			}
 
 			new Rickshaw.Graph.Axis.Time({
 				graph : graph
@@ -289,15 +301,15 @@ import $ from 'jquery';
 				new Rickshaw.Graph.Axis.Y.Scaled({
 						element : document.getElementById(yAxes.yAxis0),
 						graph : graph,
-						scale : singleScale ? singleScaleParameters : smallestScaleAll,
+						scale : hasSingleScale ? singleScaleParameters : smallestScaleAll,
 						tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
-							if (singleScale) {
+							if (hasSingleScale) {
 								return y.toPrecision(3) + '€';
 							}
 							return ((y / 1000) * 1.2).toPrecision(2) + '€';
 						},
 						orientation : 'left',
-						height : singleScale ? chartHeight : 100
+						height : hasSingleScale ? chartHeight : 100
 				});
 			}
 

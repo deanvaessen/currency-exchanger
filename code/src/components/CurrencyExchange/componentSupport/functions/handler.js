@@ -30,13 +30,32 @@ let exposed = new class {
 
 	}
 
+	// Event mocking
 	mockEvent(obj, event, self) {
 		const mockedEvent = new Event(event, {target : obj, bubbles : true});
 
 		return obj ? obj.dispatchEvent(mockedEvent) : false;
 	}
 
+	// Process the input of amount
+	changeCurrencyAmount(name, value) {
+		this.setState({leadingCurrency : value});
+
+		// Mock an event so that formous knows which the leadingCurrency is
+		const elID = 'CurrencyExchange__formousTestLeadingCurrency';
+		const leadingRecorder = document.getElementById(elID);
+
+		name = name.charAt(0).toUpperCase() + name.slice(1);
+
+		leadingRecorder.value = name;
+
+		this.setState({ currencyHasChanged : true});
+		exposed.mockEvent(leadingRecorder, 'input');
+	}
+
+
 	submit(formStatus, fields) {
+
 		// Get state and run some filters and tests to find and fix issues
 		const leadingCurrencySelector = this.state.leadingCurrency,
 			leadingCurrency = (leadingCurrencySelector === 'valueCurrencyA' ? this.state.selectCurrencyA : this.state.selectCurrencyB),
@@ -208,12 +227,7 @@ let exposed = new class {
 					axes : {
 						y : [
 							'chartHistorySelected__yAxis0',
-						],
-						scales : {
-							y : {
-								singleScale : true
-							}
-						}
+						]
 					},
 					chart : '#chartHistorySelected',
 					smoothing : 'chartHistorySelected__smoother',
@@ -229,8 +243,8 @@ let exposed = new class {
 				}
 			};
 
-
 			helpers.render.graph(graphHistorySelected);
+
 	}
 
 	keyUp(name, e) {
@@ -238,7 +252,7 @@ let exposed = new class {
 			// Prevent enter key, Formous doesn't seem to like the enter key
 			e.preventDefault();
 		} else {
-
+			// for fix scroll send event to state if it's the one for he one I want to prevent default of?
 		}
 	}
 };
