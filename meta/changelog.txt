@@ -7,3 +7,4 @@
 17/11/2016 - 0.0.7: Rickshaw selected currencies refinements.
 18/11/2016 - 0.0.8: Rickshaw selected currencies refinements.
 19/11/2016 - 0.0.9: Fixed error text amount input positioning, Rickshaw render function improvements. Spent time working around seemingly limitations with my Form library (jump on submit that I can't seem to hook into properly, as well as taking some function logic out of the component's render() which seems to cause issues with tests.
+20/11/2016 - 0.1.0: Fixed selected currencies y scale mismatch, increased numbers after comma for hover. Gave more space to currencies with smaller values on history all chart.

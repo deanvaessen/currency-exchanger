@@ -66,7 +66,6 @@ class CurrencyExchange extends React.Component {
 			currencyHasChanged : true,
 			historicCurrencyListAll : [],
 			historicCurrencyListSelected : [],
-			resultCurrencyExchange : '', //remove this one
 			resultCurrencyExchangeA : '',
 			resultCurrencyExchangeB : '',
 			shouldHideWrittenOutcome : true,
@@ -112,7 +111,8 @@ class CurrencyExchange extends React.Component {
 										'chartHistoryAll__yAxis1',
 										'chartHistoryAll__yAxis2',
 										'chartHistoryAll__yAxis3',
-										'chartHistoryAll__yAxis4'
+										'chartHistoryAll__yAxis4',
+										'chartHistoryAll__yAxis5'
 									]
 								},
 								chart : '#chartHistoryAll',
@@ -124,7 +124,7 @@ class CurrencyExchange extends React.Component {
 								slider : 'chartHistoryAll__slider'
 							},
 							attributes : {
-								height : 500,
+								height : 1100,
 								clearPrevious : false
 							}
 						};
@@ -168,13 +168,10 @@ class CurrencyExchange extends React.Component {
 	}
 
 	render() {
-
-		/*eslint-disable */
 		const {
-			fields : { currencyA, currencyB, resultCurrencyExchange, formousTestLeadingCurrency },
+			fields : { currencyA, currencyB, formousTestLeadingCurrency },
 			formSubmit
 		} = this.props;
-		/*eslint-enable */
 
 		const messageA = 'You selected ' + this.state.selectCurrencyA,
 			messageB = 'You selected ' + this.state.selectCurrencyB;
@@ -348,6 +345,7 @@ class CurrencyExchange extends React.Component {
 									</h4>
 
 									<div id="CurrencyExchange__historyChartAll" className="CurrencyExchange__resultbox indent">
+										<div id="chartHistoryAll__yAxis5"></div>
 										<div id="chartHistoryAll__yAxis4"></div>
 										<div id="chartHistoryAll__yAxis3"></div>
 										<div id="chartHistoryAll__yAxis2"></div>

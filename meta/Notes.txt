@@ -1,0 +1,2 @@
+Rickshaw:
+*The historic chart for all currencies in the database flowed out of me learning Rickshaw, I left it in as a bit of a bonus.

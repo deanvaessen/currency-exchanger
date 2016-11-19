@@ -16,7 +16,7 @@
 		margin: 10% auto;
 		@include rem(width, 850px)
 		box-shadow: 0px 1px 6px 1px rgba(0,0,0,0.4);
-		border-radius: 0% 0% 4% 4%;
+		//border-radius: 0% 0% 4% 4%;
 
 	.CurrencyExchange__title {
 		text-align: center;
@@ -29,7 +29,7 @@
 	.CurrencyExchange__innerContainer {
 		background: #fffcf6;
 		@include rem(padding, 10px 35px 35px 35px);
-		border-radius: 0% 0% 4% 4%;
+		//border-radius: 0% 0% 4% 4%;
 
 		hr {
 			@extend .e-seperator-depressed;

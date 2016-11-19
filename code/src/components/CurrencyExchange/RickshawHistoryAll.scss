@@ -17,65 +17,101 @@
 
 	/* Graph */
 		#chartHistoryAll {
-			//left: 50px;
-			//width: 1000px;
-			width: 95%;
-			//position: absolute;
-			@include rem(margin, 0 0 120px 22px);
+			width: 93%;
+			@include rem(margin, 0 0 120px 27px);
 		}
 
-		#chartHistoryAll__yAxis4, #chartHistoryAll__yAxis3, #chartHistoryAll__yAxis2, #chartHistoryAll__yAxis1, #chartHistoryAll__yAxis0 {
+		#chartHistoryAll__yAxis5, #chartHistoryAll__yAxis4, #chartHistoryAll__yAxis3, #chartHistoryAll__yAxis2, #chartHistoryAll__yAxis1, #chartHistoryAll__yAxis0 {
 			overflow: hidden;
+		}
+
+		// largest scale
+		#chartHistoryAll__yAxis5 {
+			position: absolute;
+			left: 97%;
+			width: 50px;
+			bottom: 1050px;
+			height: 50px;
+
+			svg {
+				position: relative;
+				top: auto !important;
+				bottom: 0px;
+				height: 50px;
+			}
 		}
 
 		// large scale
 		#chartHistoryAll__yAxis4 {
 			position: absolute;
-			left: 98%;
-			width: 40px;
-			bottom: 420px;
-			height: 80px;
+			left: 0.5%;
+			width: 50px;
+			bottom: 1005px;
+			height: 10px;
+
+			svg {
+				position: relative;
+				bottom: 90px;
+			}
 		}
 
 		// medium scale
 		#chartHistoryAll__yAxis3 {
 			position: absolute;
-			left: 3%;
-			width: 40px;
-			bottom: 310px;
-			height: 80px;
+			left: 97%;
+			width: 50px;
+			bottom: 910px;
+			height: 15px;
 
 			svg {
 				position: relative;
-				top: 62px;
+				top: auto !important;
+				bottom: 20px;
 			}
 		}
 
 		// small scale
 		#chartHistoryAll__yAxis2 {
 			position: absolute;
-			left: 98%;
-			width: 40px;
-			bottom: 170px;
-			height: 120px;
+			left: 97%;
+			width: 50px;
+			bottom: 655px;
+			height: 220px;
+
+			svg {
+				top: auto !important;
+				position: relative;
+				bottom: 32px;
+				height: 300px;
+			}
 		}
 
 		// very small scale
 		#chartHistoryAll__yAxis1 {
 			position: absolute;
-			left: 3%;
-			bottom: 67px;
+			left: 0.5%;
+			bottom: 407px;
 			width: 40px;
-			height: 70px;
+			height: 170px;
+
+			svg {
+				top: auto !important; // overwrite rickshaw itself
+				bottom: 35px;
+			}
 		}
 
 		// smallest scale
 		#chartHistoryAll__yAxis0 {
 			position: absolute;
-			width: 40px;
-			bottom: 0;
-			left: 98%;
-			height: 70px;
+			width: 50px;
+			bottom: 0px;
+			left: 97%;
+			height: 340px;
+
+			svg {
+				top: auto !important; // overwrite rickshaw itself
+				bottom: 75px;
+			}
 		}
 
 	/*Legend*/

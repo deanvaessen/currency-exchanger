@@ -1,6 +1,10 @@
 /*******************************
  * [_render.js]
  * Define helper function for rendering here
+ *
+ * Notes:
+ * This function could be cleaner by moving more of the attributes for rendering to input object instead of hardcoding it here.
+ * Would make it more modular.
  ******************************/
 
 /**
@@ -20,12 +24,16 @@ import $ from 'jquery';
 
 	/**
 	 * { Graph }
-	 * A functionfor graph rendering
+	 * A function for graph rendering
 	*/
 	const graph = input => {
 
-		// Define variables
+		/**
+		 * { Pre-flight check }
+		 * Set up some things to enable the rendering
+		*/
 
+		// Define variables
 			// Page Elements
 			let chartElement = input.elements.chart,
 					legendElement = input.elements.legend.legend,
@@ -56,12 +64,10 @@ import $ from 'jquery';
 
 			});
 
-		// See if we need only one scale
-		if (Object.keys(yAxes).length == 1) {
-			hasSingleScale = true;
-		}
-
-		clearingArray.push(chartElement, legendElement, sliderElement, smoothingElement);
+			// See if we need only one scale
+			if (Object.keys(yAxes).length == 1) {
+				hasSingleScale = true;
+			}
 
 		/**
 		 * { Clear previous }
@@ -69,6 +75,8 @@ import $ from 'jquery';
 		*/
 
 		const clearPrevious = function () {
+			clearingArray.push(chartElement, legendElement, sliderElement, smoothingElement);
+
 			if (input.attributes.clearPrevious) {
 
 				// Clear all
@@ -136,11 +144,12 @@ import $ from 'jquery';
 
 		// Define some scales
 			// For the 'all currencies' graph
-			const largeScaleAll = d3.scaleLinear().domain([14000, 15500]).range([420, 500]).nice();
-			const mediumScaleAll = d3.scaleLinear().domain([130, 1400]).range([290, 400]).nice();
-			const smallScaleAll = d3.scaleLinear().domain([16, 129.9]).range([170, 290]).nice();
-			const verySmallScaleAll = d3.scaleLinear().domain([3, 15.9]).range([100, 170]).nice();
-			const smallestScaleAll = d3.scaleLinear().domain([0, 2.9]).range([0, 100]).nice();
+			const largestScaleAll = d3.scaleLinear().domain([14000, 15500]).range([1050, 1100]);
+			const largeScaleAll = d3.scaleLinear().domain([400, 1400]).range([800, 1050]); //940
+			const mediumScaleAll = d3.scaleLinear().domain([129.01, 400]).range([800, 970]); //890
+			const smallScaleAll = d3.scaleLinear().domain([15.901, 129.9]).range([670, 890]);
+			const verySmallScaleAll = d3.scaleLinear().domain([2.901, 15.9]).range([400, 670]);
+			const smallestScaleAll = d3.scaleLinear().domain([0, 2.9]).range([0, 400]);
 
 		// Then see how to treat each currency
 		currencies.forEach((item, index) => {
@@ -184,16 +193,18 @@ import $ from 'jquery';
 			};
 
 			// Find the largest and smallest items
-			const smallestRate = Math.min.apply(0, yArray);
+			//const smallestRate = Math.min.apply(0, yArray);
 			const largestRate = Math.max.apply(0, yArray);
 
 			// Take a scale to match it
 			if (hasSingleScale) {
-				singleScaleParameters = d3.scaleLinear().domain([smallestRate, largestRate]).range([50, chartHeight - 100 ]).nice();
+				singleScaleParameters = d3.scaleLinear().domain([0, 1]).range([50, chartHeight - 100 ]);
 			} else {
 				if (largestRate >= 1400) {
+					plottedCurrency.scale = largestScaleAll;
+				} else if (largestRate >= 400 && largestRate < 1400) {
 					plottedCurrency.scale = largeScaleAll;
-				} else if (largestRate >= 130 && largestRate < 1400) {
+				} else if (largestRate >= 130 && largestRate < 400) {
 					plottedCurrency.scale = mediumScaleAll;
 				} else if (largestRate >= 16 && largestRate < 130) {
 					plottedCurrency.scale = smallScaleAll;
@@ -215,7 +226,7 @@ import $ from 'jquery';
 		 * Now go on and render the thing
 		*/
 		const renderTheGraph = function () {
-
+			/*eslint-disable */
 			// Read the width of the container
 			parentWidth = document.getElementById(parentElement).offsetWidth;
 
@@ -230,9 +241,6 @@ import $ from 'jquery';
 			});
 
 
-			new Rickshaw.Graph.HoverDetail({
-				graph : graph
-			});
 
 			if (parentWidth !== 0) {
 				new Rickshaw.Graph.Legend({
@@ -245,16 +253,48 @@ import $ from 'jquery';
 				graph : graph
 			});
 
+			new Rickshaw.Graph.HoverDetail( {
+				graph: graph,
+				formatter : function(series, x, y) {
+					console.log(x, y)
+					var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + '"></span>';
+					var content = swatch + series.name + ": " + y.toFixed(4);
+					return content;
+				}
+			} );
+
+			if (yAxes.yAxis5) {
+				new Rickshaw.Graph.Axis.Y.Scaled({
+						element : document.getElementById(yAxes.yAxis5),
+						graph : graph,
+						scale : largestScaleAll,
+						orientation : 'left',
+						ticks: 20,
+						tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
+							return '14.1K €';
+							//return ((y / 100) * 2) / 1000 + 'K ' + '€';
+						},
+						//height : 80
+				});
+			}
+
 			if (yAxes.yAxis4) {
 				new Rickshaw.Graph.Axis.Y.Scaled({
 						element : document.getElementById(yAxes.yAxis4),
 						graph : graph,
 						scale : largeScaleAll,
-						orientation : 'left',
+						orientation : 'right',
+						ticks: 20,
+						//pixelsPerTick: something
 						tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
-							return ((y / 100) * 2) / 1000 + 'K ' + '€';
+							//return parseInt((y / 1000) / 1.995) + '€';
+							let yTickValue = Math.abs(y);
+
+							yTickValue = parseInt((yTickValue / 1000));
+
+							if (yTickValue == 1000)   { return '1220€' }
 						},
-						height : 80
+						//height : 80
 				});
 			}
 
@@ -263,11 +303,17 @@ import $ from 'jquery';
 						element : document.getElementById(yAxes.yAxis3),
 						graph : graph,
 						scale : mediumScaleAll,
-						orientation : 'right',
+						orientation : 'left',
+						ticks: 40,
 						tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
-							return parseInt((y / 1000) / 1.995) + '€';
+							//return ((y / 1000));
+							let yTickValue = Math.abs(y);
+
+							yTickValue = parseInt((yTickValue / 1000))
+
+							if (yTickValue == 290)   { return '300€' }
 						},
-						height : 110
+						//height : 210
 				});
 			}
 
@@ -277,10 +323,18 @@ import $ from 'jquery';
 						graph : graph,
 						scale : smallScaleAll,
 						tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
-							return (y / 1000) + '€';
+							//return (y / 1000) + '€';
+
+							let yTickValue = Math.abs(y);
+
+							yTickValue = ((yTickValue / 1000)).toFixed(1);
+
+							if (yTickValue == 100)   { return '15€' }
+							else if (yTickValue == 110)   { return '60€' }
+							else if (yTickValue == 120)   { return '105€' }
 						},
 						orientation : 'left',
-						height : 120
+						//height : 220
 				});
 			}
 
@@ -290,10 +344,17 @@ import $ from 'jquery';
 						graph : graph,
 						scale : verySmallScaleAll,
 						tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
-							return (y / 1000) + '€';
+							//return (y / 1000) + '€';
+
+							let yTickValue = Math.abs(y);
+
+							yTickValue = ((yTickValue / 1000)).toFixed(1);
+
+							if (yTickValue == 13)   { return '8.7€' }
+							else if (yTickValue == 12)   { return '5.1€' }
 						},
 						orientation : 'right',
-						height : 70
+						//height : 270
 				});
 			}
 
@@ -302,28 +363,39 @@ import $ from 'jquery';
 						element : document.getElementById(yAxes.yAxis0),
 						graph : graph,
 						scale : hasSingleScale ? singleScaleParameters : smallestScaleAll,
+						ticks : 5,
 						tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
 							if (hasSingleScale) {
-								return y.toPrecision(3) + '€';
+								return y.toFixed(2) + '€';
 							}
-							return ((y / 1000) * 1.2).toPrecision(2) + '€';
+
+							let yTickValue = Math.abs(y);
+
+							yTickValue = ((yTickValue/ 1000)).toFixed(1);
+
+							if (yTickValue == 3)   { return '2.45€' }
+							else if (yTickValue == 2.5)   { return '1€' }
 						},
 						orientation : 'left',
-						height : hasSingleScale ? chartHeight : 100
+						//height : hasSingleScale ? chartHeight : 400
 				});
 			}
 
 			graph.render();
+
 		};
 
 		renderTheGraph();
 
-		// This is to catch an issue where the parentWidth cannot be read
-		if (parentWidth === 0) {
-			clearPrevious();
-			setTimeout(function (){ renderTheGraph(); }, 0.001);
-		}
-
+		/**
+		 * { Post-render }
+		 *
+		*/
+			// This is to catch an issue where the parentWidth cannot be read
+			if (parentWidth === 0) {
+				clearPrevious();
+				setTimeout(function (){ renderTheGraph(); }, 0.001);
+			}
 	};
 
 	return {
