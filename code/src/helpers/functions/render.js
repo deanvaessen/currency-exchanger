@@ -143,13 +143,21 @@ import $ from 'jquery';
 		*/
 
 		// Define some scales
+
+			/*const largestScaleAll = d3.scaleLinear().domain([14000, 15500]).range([1050, 1100]);
+			const largeScaleAll = d3.scaleLinear().domain([400, 1400]).range([800, 1050]); //940
+			const mediumScaleAll = d3.scaleLinear().domain([129.01, 400]).range([800, 970]); //890
+			const smallScaleAll = d3.scaleLinear().domain([15.901, 129.9]).range([670, 890]);
+			const verySmallScaleAll = d3.scaleLinear().domain([2.901, 15.9]).range([400, 670]);
+			const smallestScaleAll = d3.scaleLinear().domain([0, 2.9]).range([0, 400]);*/
+
 			// For the 'all currencies' graph
 			const largestScaleAll = d3.scaleLinear().domain([14000, 15500]).range([1050, 1100]);
 			const largeScaleAll = d3.scaleLinear().domain([400, 1400]).range([800, 1050]); //940
 			const mediumScaleAll = d3.scaleLinear().domain([129.01, 400]).range([800, 970]); //890
 			const smallScaleAll = d3.scaleLinear().domain([15.901, 129.9]).range([670, 890]);
-			const verySmallScaleAll = d3.scaleLinear().domain([2.901, 15.9]).range([400, 670]);
-			const smallestScaleAll = d3.scaleLinear().domain([0, 2.9]).range([0, 400]);
+			const verySmallScaleAll = d3.scaleLinear().domain([2.901, 15.9]).range([300, 900]);
+			const smallestScaleAll = d3.scaleLinear().domain([0, 2.9]).range([-100, 450]);
 
 		// Then see how to treat each currency
 		currencies.forEach((item, index) => {
@@ -256,9 +264,8 @@ import $ from 'jquery';
 			new Rickshaw.Graph.HoverDetail( {
 				graph: graph,
 				formatter : function(series, x, y) {
-					console.log(x, y)
-					var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + '"></span>';
-					var content = swatch + series.name + ": " + y.toFixed(4);
+					const swatch = '<span class="detail_swatch" style="background-color: ' + series.color + '"></span>';
+					const content = swatch + series.name + ": " + y.toFixed(4);
 					return content;
 				}
 			} );
@@ -267,14 +274,7 @@ import $ from 'jquery';
 				new Rickshaw.Graph.Axis.Y.Scaled({
 						element : document.getElementById(yAxes.yAxis5),
 						graph : graph,
-						scale : largestScaleAll,
-						orientation : 'left',
-						ticks: 20,
-						tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
-							return '14.1K €';
-							//return ((y / 100) * 2) / 1000 + 'K ' + '€';
-						},
-						//height : 80
+						scale : largestScaleAll
 				});
 			}
 
@@ -282,19 +282,7 @@ import $ from 'jquery';
 				new Rickshaw.Graph.Axis.Y.Scaled({
 						element : document.getElementById(yAxes.yAxis4),
 						graph : graph,
-						scale : largeScaleAll,
-						orientation : 'right',
-						ticks: 20,
-						//pixelsPerTick: something
-						tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
-							//return parseInt((y / 1000) / 1.995) + '€';
-							let yTickValue = Math.abs(y);
-
-							yTickValue = parseInt((yTickValue / 1000));
-
-							if (yTickValue == 1000)   { return '1220€' }
-						},
-						//height : 80
+						scale : largeScaleAll
 				});
 			}
 
@@ -302,18 +290,7 @@ import $ from 'jquery';
 				new Rickshaw.Graph.Axis.Y.Scaled({
 						element : document.getElementById(yAxes.yAxis3),
 						graph : graph,
-						scale : mediumScaleAll,
-						orientation : 'left',
-						ticks: 40,
-						tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
-							//return ((y / 1000));
-							let yTickValue = Math.abs(y);
-
-							yTickValue = parseInt((yTickValue / 1000))
-
-							if (yTickValue == 290)   { return '300€' }
-						},
-						//height : 210
+						scale : mediumScaleAll
 				});
 			}
 
@@ -321,20 +298,7 @@ import $ from 'jquery';
 				new Rickshaw.Graph.Axis.Y.Scaled({
 						element : document.getElementById(yAxes.yAxis2),
 						graph : graph,
-						scale : smallScaleAll,
-						tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
-							//return (y / 1000) + '€';
-
-							let yTickValue = Math.abs(y);
-
-							yTickValue = ((yTickValue / 1000)).toFixed(1);
-
-							if (yTickValue == 100)   { return '15€' }
-							else if (yTickValue == 110)   { return '60€' }
-							else if (yTickValue == 120)   { return '105€' }
-						},
-						orientation : 'left',
-						//height : 220
+						scale : smallScaleAll
 				});
 			}
 
@@ -343,18 +307,6 @@ import $ from 'jquery';
 						element : document.getElementById(yAxes.yAxis1),
 						graph : graph,
 						scale : verySmallScaleAll,
-						tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
-							//return (y / 1000) + '€';
-
-							let yTickValue = Math.abs(y);
-
-							yTickValue = ((yTickValue / 1000)).toFixed(1);
-
-							if (yTickValue == 13)   { return '8.7€' }
-							else if (yTickValue == 12)   { return '5.1€' }
-						},
-						orientation : 'right',
-						//height : 270
 				});
 			}
 
@@ -363,18 +315,31 @@ import $ from 'jquery';
 						element : document.getElementById(yAxes.yAxis0),
 						graph : graph,
 						scale : hasSingleScale ? singleScaleParameters : smallestScaleAll,
-						ticks : 5,
+						ticks : hasSingleScale? 5 : 30,
 						tickFormat : Rickshaw.Fixtures.Number.formatKMBT = function (y) {
 							if (hasSingleScale) {
-								return y.toFixed(2) + '€';
+								return y.toFixed(2);
 							}
 
 							let yTickValue = Math.abs(y);
 
 							yTickValue = ((yTickValue/ 1000)).toFixed(1);
 
-							if (yTickValue == 3)   { return '2.45€' }
-							else if (yTickValue == 2.5)   { return '1€' }
+
+							if (yTickValue == 3.1)   { return '14.5K' }
+							else if (yTickValue == 2.9)   { return '1200' }
+							else if (yTickValue == 2.6)   { return '225' }
+							else if (yTickValue == 2.4)   { return '95' }
+							else if (yTickValue == 2.2)   { return '60' }
+							else if (yTickValue == 2.0)   { return '27' }
+							else if (yTickValue == 1.8)   { return '9.8' }
+							else if (yTickValue == 1.6)   { return '8.3' }
+							else if (yTickValue == 1.4)   { return '6.2' }
+							else if (yTickValue == 1.0)   { return '3.8' }
+							else if (yTickValue == 0.8)   { return '1.97' }
+							else if (yTickValue == 0.6)   { return '1.65' }
+							else if (yTickValue == 0.2)   { return '0.87' }
+							else if (yTickValue == 0)   { return '0' }
 						},
 						orientation : 'left',
 						//height : hasSingleScale ? chartHeight : 400
