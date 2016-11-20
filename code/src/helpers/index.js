@@ -81,8 +81,8 @@ const index = (function () {
 			};
 
 			const render = {
-				graph : function (input){
-					return RenderHelpers.graph(input);
+				graph : function (input, callback){
+					return RenderHelpers.graph(input, callback);
 				}
 			};
 

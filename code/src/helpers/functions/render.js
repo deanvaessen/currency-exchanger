@@ -3,8 +3,8 @@
  * Define helper function for rendering here
  *
  * Notes:
- * This function could be cleaner by moving more of the attributes for rendering to input object instead of hardcoding it here.
- * Would make it more modular.
+ * This function could possibly be cleaner by moving more of the attributes for rendering to input object instead of hardcoding it here.
+ * Would make it more modular. Right now it really works for 2 scenario's, a single scale (dynamic) and a set scenario of 5 axes.
  ******************************/
 
 /**
@@ -26,7 +26,7 @@ import $ from 'jquery';
 	 * { Graph }
 	 * A function for graph rendering
 	*/
-	const graph = input => {
+	const graph = (input, callback) => {
 
 		/**
 		 * { Pre-flight check }
@@ -46,40 +46,52 @@ import $ from 'jquery';
 				clearingArray = [],
 				hasSingleScale,
 				singleScaleParameters,
-				parentElement = document.getElementById(input.elements.legend.legend).parentElement.parentElement.id,
+				parentElement = document.getElementById(legendElement).parentElement.parentElement.id,
 				currencies = [],
 				yAxes = {},
-				series = [];
+				series = [],
+				lineColours = {},
+				shouldClearPrevious;
 
+		// Do a check to see if we should clear the previous graph (does it still exist and need to be rerendered?)
+			let legendItems = document.getElementById(legendElement).innerHTML;
+
+			legendItems = (legendItems.trim) ? legendItems.trim() : legendItems.replace(/^\s+/, '');
+
+			if (legendItems != '' || !legendItems) {
+				shouldClearPrevious = true;
+			}
+
+		// More Variables
 			// yAxes
-			input.elements.axes.y.forEach((item, index) => {
-				const axisID = item,
-						axisName = 'yAxis' + index;
+				input.elements.axes.y.forEach((item, index) => {
+					const axisID = item,
+							axisName = 'yAxis' + index;
 
-				yAxes[axisName] = axisID;
+					yAxes[axisName] = axisID;
 
-				if (input.attributes.clearPrevious) {
-					clearingArray.push(item);
-				}
+					if (shouldClearPrevious) {
+						clearingArray.push(item);
+					}
 
-			});
+				});
 
-			// See if we need only one scale
+		// See if we need only one scale
 			if (Object.keys(yAxes).length == 1) {
 				hasSingleScale = true;
 			}
 
 		/**
 		 * { Clear previous }
-		 * Should we clear the previous graph?
+		 * Ability to clear the previous graph
 		*/
 
 		const clearPrevious = function () {
 			clearingArray.push(chartElement, legendElement, sliderElement, smoothingElement);
 
-			if (input.attributes.clearPrevious) {
+			if (shouldClearPrevious) {
 
-				// Clear all
+			// Clear all
 				clearingArray.forEach((item, index) => {
 					if (item.substring(0, 1) !== '#'){
 						item = '#' + item;
@@ -94,7 +106,7 @@ import $ from 'jquery';
 			}
 		};
 
-		if (input.attributes.clearPrevious){
+		if (shouldClearPrevious){
 			clearPrevious();
 		}
 
@@ -102,7 +114,8 @@ import $ from 'jquery';
 		 * { Currency array population }
 		 * Populate the currencies array with all the relevant data (rate per date)
 		*/
-			// Get all the currencies
+
+		// Get all the currencies
 			input.lineArray[0].currencies.forEach((item, index) => {
 				const currency = {
 					currency : item.currency,
@@ -112,7 +125,7 @@ import $ from 'jquery';
 				currencies.push(currency);
 			});
 
-			// For each currency
+		// For each currency
 			currencies.forEach((item, index) => {
 				const currencyIndex = index,
 					currency = item.currency;
@@ -144,90 +157,103 @@ import $ from 'jquery';
 
 		// Define some scales
 
-			/*const largestScaleAll = d3.scaleLinear().domain([14000, 15500]).range([1050, 1100]);
-			const largeScaleAll = d3.scaleLinear().domain([400, 1400]).range([800, 1050]); //940
-			const mediumScaleAll = d3.scaleLinear().domain([129.01, 400]).range([800, 970]); //890
-			const smallScaleAll = d3.scaleLinear().domain([15.901, 129.9]).range([670, 890]);
-			const verySmallScaleAll = d3.scaleLinear().domain([2.901, 15.9]).range([400, 670]);
-			const smallestScaleAll = d3.scaleLinear().domain([0, 2.9]).range([0, 400]);*/
-
 			// For the 'all currencies' graph
-			const largestScaleAll = d3.scaleLinear().domain([14000, 15500]).range([1050, 1100]);
-			const largeScaleAll = d3.scaleLinear().domain([400, 1400]).range([800, 1050]); //940
-			const mediumScaleAll = d3.scaleLinear().domain([129.01, 400]).range([800, 970]); //890
-			const smallScaleAll = d3.scaleLinear().domain([15.901, 129.9]).range([670, 890]);
-			const verySmallScaleAll = d3.scaleLinear().domain([2.901, 15.9]).range([300, 900]);
-			const smallestScaleAll = d3.scaleLinear().domain([0, 2.9]).range([-100, 450]);
+				const largestScaleAll = d3.scaleLinear().domain([14000, 15500]).range([1050, 1100]);
+				const largeScaleAll = d3.scaleLinear().domain([400, 1400]).range([800, 1050]); //940
+				const mediumScaleAll = d3.scaleLinear().domain([129.01, 400]).range([800, 970]); //890
+				const smallScaleAll = d3.scaleLinear().domain([15.901, 129.9]).range([670, 890]);
+				const verySmallScaleAll = d3.scaleLinear().domain([2.901, 15.9]).range([300, 900]);
+				const smallestScaleAll = d3.scaleLinear().domain([0, 2.9]).range([-100, 450]);
 
 		// Then see how to treat each currency
-		currencies.forEach((item, index) => {
-			const currency = item.currency;
-			let data = [];
-			let yArray = [];
+			currencies.forEach((item, index) => {
+				const currency = item.currency;
+				let data = [];
+				let yArray = [];
 
 			// Get all the X and Y values for a certain currency
-			item.rates.forEach((item, index) => {
+				item.rates.forEach((item, index) => {
 
-				const rate = parseFloat(item.rate);
+					const rate = parseFloat(item.rate);
 
-				if (isNaN(rate)){
-					return;
-				}
+					if (isNaN(rate)){
+						return;
+					}
 
-				let dateObject = item.date.split('-');
+					let dateObject = item.date.split('-');
 
-				dateObject = {
-					day : dateObject[2],
-					month : dateObject[1],
-					year : dateObject[0]
+					dateObject = {
+						day : dateObject[2],
+						month : dateObject[1],
+						year : dateObject[0]
+					};
+
+					const date = generate.secondsSinceEpochFromDate(dateObject);
+
+					const xAndY = {
+						x : date,
+						y : rate
+					};
+
+					data.push(xAndY);
+					yArray.push(rate);
+				});
+
+			// Decide the colour for the currency
+				const decideColour = () => {
+
+					if (input.lineColours) {
+						if (input.lineColours.state[currency]){
+
+							// Save it
+							const colour = input.lineColours.state[currency];
+
+							lineColours[currency] = colour;
+							return colour;
+						}
+					}
+
+					const colour = generate.colour();
+
+					// Save it
+					lineColours[currency] = colour;
+					return colour;
 				};
-
-				const date = generate.secondsSinceEpochFromDate(dateObject);
-
-				const xAndY = {
-					x : date,
-					y : rate
-				};
-
-				data.push(xAndY);
-				yArray.push(rate);
-			});
 
 			// Push all the values into the main series Array)
-			let plottedCurrency = {
-				data : data.reverse(),
-				color : generate.colour(),
-				name : currency
-			};
+				let plottedCurrency = {
+					data : data.reverse(),
+					color : decideColour(),
+					name : currency
+				};
 
 			// Find the largest and smallest items
-			//const smallestRate = Math.min.apply(0, yArray);
-			const largestRate = Math.max.apply(0, yArray);
+				//const smallestRate = Math.min.apply(0, yArray);
+				const largestRate = Math.max.apply(0, yArray);
 
 			// Take a scale to match it
-			if (hasSingleScale) {
-				singleScaleParameters = d3.scaleLinear().domain([0, 1]).range([50, chartHeight - 100 ]);
-			} else {
-				if (largestRate >= 1400) {
-					plottedCurrency.scale = largestScaleAll;
-				} else if (largestRate >= 400 && largestRate < 1400) {
-					plottedCurrency.scale = largeScaleAll;
-				} else if (largestRate >= 130 && largestRate < 400) {
-					plottedCurrency.scale = mediumScaleAll;
-				} else if (largestRate >= 16 && largestRate < 130) {
-					plottedCurrency.scale = smallScaleAll;
-				} else if (largestRate >= 3 && largestRate < 16) {
-					plottedCurrency.scale = verySmallScaleAll;
-				} else if (largestRate < 3) {
-					plottedCurrency.scale = smallestScaleAll;
+				if (hasSingleScale) {
+					singleScaleParameters = d3.scaleLinear().domain([0, 1]).range([50, chartHeight - 100 ]);
+				} else {
+					if (largestRate >= 1400) {
+						plottedCurrency.scale = largestScaleAll;
+					} else if (largestRate >= 400 && largestRate < 1400) {
+						plottedCurrency.scale = largeScaleAll;
+					} else if (largestRate >= 130 && largestRate < 400) {
+						plottedCurrency.scale = mediumScaleAll;
+					} else if (largestRate >= 16 && largestRate < 130) {
+						plottedCurrency.scale = smallScaleAll;
+					} else if (largestRate >= 3 && largestRate < 16) {
+						plottedCurrency.scale = verySmallScaleAll;
+					} else if (largestRate < 3) {
+						plottedCurrency.scale = smallestScaleAll;
+					}
 				}
-			}
 
-			series.push(plottedCurrency);
+				series.push(plottedCurrency);
 
-		});
+			});
 
-		//console.log(series);
 
 		/**
 		 * { Rickshaw rendering }
@@ -355,10 +381,19 @@ import $ from 'jquery';
 		 * { Post-render }
 		 *
 		*/
-			// This is to catch an issue where the parentWidth cannot be read
+		// Return values
+			const output = {
+				legendElement : legendElement,
+				lineColours : lineColours
+			};
+
+		// This is to catch an issue where the parentWidth cannot be read
 			if (parentWidth === 0) {
 				clearPrevious();
 				setTimeout(function (){ renderTheGraph(); }, 0.001);
+				setTimeout(function (){ callback(output); }, 10);
+			} else{
+				callback(output);
 			}
 	};
 

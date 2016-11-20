@@ -20,24 +20,29 @@ import communicator from './communicator';
 
 let exposed = new class {
 
-	// onChange radiobuttons logLocationLookIn
+	/**
+	* { onChange radiobuttons logLocationLookIn }
+	*
+	*/
 	onChangeDropdown(name, e) {
 		this.setState({ [name] : e.target.value});
 		this.setState({ currencyHasChanged : true});
-
-		// Show the 'Amount X of Currency X equals amount Y of currency Y'
-		//this.shouldHideWrittenOutcome = false;
-
 	}
 
-	// Event mocking
-	mockEvent(obj, event, self) {
+	/**
+	* { Event mocking }
+	* E.g: to trigger an input
+	*/
+	mockEvent(obj, event) {
 		const mockedEvent = new Event(event, {target : obj, bubbles : true});
 
 		return obj ? obj.dispatchEvent(mockedEvent) : false;
 	}
 
-	// Process the input of amount
+	/**
+	* { Process the input of amount }
+	*
+	*/
 	changeCurrencyAmount(name, value) {
 		this.setState({leadingCurrency : value});
 
@@ -53,87 +58,105 @@ let exposed = new class {
 		exposed.mockEvent(leadingRecorder, 'input');
 	}
 
-
+	/**
+	* { Handler for form submission }
+	*
+	*/
 	submit(formStatus, fields) {
 
-		// Get state and run some filters and tests to find and fix issues
-		const leadingCurrencySelector = this.state.leadingCurrency,
-			leadingCurrency = (leadingCurrencySelector === 'valueCurrencyA' ? this.state.selectCurrencyA : this.state.selectCurrencyB),
-			leadingCurrencyValue = (leadingCurrencySelector === 'valueCurrencyA' ? fields.currencyA.value : fields.currencyB.value),
-			followingCurrency = (leadingCurrencySelector === 'valueCurrencyA' ? this.state.selectCurrencyB : this.state.selectCurrencyA),
-			followingCurrencyValue = (leadingCurrencySelector === 'valueCurrencyA' ? fields.currencyB.value : fields.currencyA.value),
-			currencyHasChanged = this.state.currencyHasChanged;
+		/**
+		* { Filter & State }
+		* Get state and run some filters and tests to find and fix issues
+		*/
 
-			let leadingCurrencyFiltered,
-			followingCurrencyFiltered,
-			leadingCurrencyRate,
-			followingCurrencyRate;
+		// Definitions
+			const leadingCurrencySelector = this.state.leadingCurrency,
+				stateA = this.state.selectCurrencyA,
+				stateB = this.state.selectCurrencyB,
+				leadingCurrency = (leadingCurrencySelector === 'valueCurrencyA' ? stateA : stateB),
+				leadingCurrencyValue = (leadingCurrencySelector === 'valueCurrencyA' ? fields.currencyA.value : fields.currencyB.value),
+				followingCurrency = (leadingCurrencySelector === 'valueCurrencyA' ? stateB : stateA),
+				followingCurrencyValue = (leadingCurrencySelector === 'valueCurrencyA' ? fields.currencyB.value : fields.currencyA.value),
+				currencyHasChanged = this.state.currencyHasChanged;
 
-			leadingCurrencyFiltered = helpers.mutate.typography.removeWhitespace(leadingCurrencyValue);
-			leadingCurrencyFiltered = helpers.mutate.typography.replaceCommaWithDot(leadingCurrencyValue);
-			leadingCurrencyFiltered = parseFloat(leadingCurrencyFiltered);
+				let leadingCurrencyFiltered,
+				followingCurrencyFiltered,
+				leadingCurrencyRate,
+				followingCurrencyRate;
 
-			followingCurrencyFiltered = helpers.mutate.typography.removeWhitespace(followingCurrencyValue);
-			followingCurrencyFiltered = helpers.mutate.typography.replaceCommaWithDot(followingCurrencyValue);
-			followingCurrencyFiltered = parseFloat(followingCurrencyFiltered);
+				leadingCurrencyFiltered = helpers.mutate.typography.removeWhitespace(leadingCurrencyValue);
+				leadingCurrencyFiltered = helpers.mutate.typography.replaceCommaWithDot(leadingCurrencyValue);
+				leadingCurrencyFiltered = parseFloat(leadingCurrencyFiltered);
 
-			const isNumeric = helpers.validate.content.isNumeric(leadingCurrencyFiltered);
+				followingCurrencyFiltered = helpers.mutate.typography.removeWhitespace(followingCurrencyValue);
+				followingCurrencyFiltered = helpers.mutate.typography.replaceCommaWithDot(followingCurrencyValue);
+				followingCurrencyFiltered = parseFloat(followingCurrencyFiltered);
 
-		if (!formStatus.touched && (leadingCurrencyFiltered == '') && (followingCurrencyFiltered === '')) {
-			return;
-		}
+				const isNumeric = helpers.validate.content.isNumeric(leadingCurrencyFiltered);
 
-		if (!isNumeric) {
-			return;
-		}
+		// Submition filters
+			if (!formStatus.touched && (leadingCurrencyFiltered == '') && (followingCurrencyFiltered === '')) {
+				return;
+			}
 
-		if (!currencyHasChanged) {
-			return;
-		}
+			if (!isNumeric) {
+				return;
+			}
 
-		if (fields.currencyA.value == '' && fields.currencyB.value == ''){
-			return;
-		}
+			if (!currencyHasChanged) {
+				return;
+			}
 
+			if (fields.currencyA.value == '' && fields.currencyB.value == ''){
+				return;
+			}
+
+		// No errors found, continue.
+
+		/**
+		* { Change the view }
+		*
+		*/
 		// Show the results block in the view
 		this.shouldHideWrittenOutcome = false;
 
 		this.setState({ currencyHasChanged : false});
 
 
-		// No errors found, continue.
-
+		/**
+		* { Start handling the currencies }
+		*
+		*/
 		// Find the appropriate rates
+			this.state.currentCurrencyList.forEach((item, index) => {
+				if (item.currency == leadingCurrency){
+					leadingCurrencyRate = item.rate;
+				}
 
-		this.state.currentCurrencyList.forEach((item, index) => {
-			if (item.currency == leadingCurrency){
-				leadingCurrencyRate = item.rate;
-			}
-
-			if (item.currency == followingCurrency){
-				followingCurrencyRate = item.rate;
-			}
-		});
+				if (item.currency == followingCurrency){
+					followingCurrencyRate = item.rate;
+				}
+			});
 
 		// Define an exchange request
-		// Only 1 currency can be 'leading', that is to say;
-			// If I input '20usd' then it should calculate this number to the OTHER currency still select it
-			// To do that, it should overwrite the old value
+			// Only 1 currency can be 'leading', that is to say;
+				// If I input '20usd' then it should calculate this number to the OTHER currency still select it
+				// To do that, it should overwrite the old value
 
-			const exchangeObject = {
-				leadingCurrency : {
-					currency : leadingCurrency,
-					amount : leadingCurrencyFiltered,
-					rate : leadingCurrencyRate
-				},
-				followingCurrency : {
-					currency : followingCurrency,
-					amount : followingCurrencyFiltered,
-					rate : followingCurrencyRate
-				}
-			};
+				const exchangeObject = {
+					leadingCurrency : {
+						currency : leadingCurrency,
+						amount : leadingCurrencyFiltered,
+						rate : leadingCurrencyRate
+					},
+					followingCurrency : {
+						currency : followingCurrency,
+						amount : followingCurrencyFiltered,
+						rate : followingCurrencyRate
+					}
+				};
 
-			// Fire off an exchange request
+		// Fire off an exchange request
 			communicator.exchange(exchangeObject, (result) => {
 				result.followingCurrency.amount = result.followingCurrency.amount.toFixed(2);
 
@@ -142,17 +165,15 @@ let exposed = new class {
 
 
 			/**
-			 * { Historic graph, selected currencies }
+			 * { Draw the historic graph of selected currencies }
 			 * Call the draw for the history graph of the currencies that are selected by the user
 			*/
-			/*eslint-disable */
 
 			let historicCurrencyListSelected = helpers.generate.copyOfArray(this.state.historicCurrencyListSelected);
 
 			// Throw out all the currencies we don't need
 				//For each date
 				historicCurrencyListSelected.forEach((item, index) => {
-					const dateIndex = index;
 					let removeFromArrayIndexes = [];
 
 					// Throw out the currencies we don't need
@@ -165,46 +186,45 @@ let exposed = new class {
 						}
 					});
 
-					for (let i = removeFromArrayIndexes.length -1; i >= 0; i--){
-					   item.currencies.splice(removeFromArrayIndexes[i],1);
+					for (let i = removeFromArrayIndexes.length - 1; i >= 0; i--){
+						item.currencies.splice(removeFromArrayIndexes[i], 1);
 					}
 				});
 
 			// Now updated the rates of the currency (but not if it leading and following are equal because then take Euro rate (default))
-			if (leadingCurrency !== followingCurrency) {
-				let exchangeObjectSelected = {
-					leadingCurrency : {
-						currency : leadingCurrency,
-						amount : 1,
-						rate : null
-					},
-					followingCurrency : {
-						currency : followingCurrency,
-						amount : 1,
-						rate : null
-					}
-				};
-
-				historicCurrencyListSelected.forEach((item, index) => {
-					item.currencies.forEach((item, index) => {
-
-						if (item.currency == leadingCurrency) {
-							exchangeObjectSelected.leadingCurrency.rate = item.rate;
-						} else if (item.currency == followingCurrency) {
-							exchangeObjectSelected.followingCurrency.rate = item.rate;
+				if (leadingCurrency !== followingCurrency) {
+					let exchangeObjectSelected = {
+						leadingCurrency : {
+							currency : leadingCurrency,
+							amount : 1,
+							rate : null
+						},
+						followingCurrency : {
+							currency : followingCurrency,
+							amount : 1,
+							rate : null
 						}
+					};
 
-						communicator.exchange(exchangeObjectSelected, (result) => {
-							item.rate = result.followingCurrency.amount;
+					historicCurrencyListSelected.forEach((item, index) => {
+						item.currencies.forEach((item, index) => {
+
+							if (item.currency == leadingCurrency) {
+								exchangeObjectSelected.leadingCurrency.rate = item.rate;
+							} else if (item.currency == followingCurrency) {
+								exchangeObjectSelected.followingCurrency.rate = item.rate;
+							}
+
+							communicator.exchange(exchangeObjectSelected, (result) => {
+								item.rate = result.followingCurrency.amount;
+							});
 						});
 					});
-				});
-			}
+				}
 
 			// Throw out the leadingCurrency because we don't need it for the graph
 				//For each date
 				historicCurrencyListSelected.forEach((item, index) => {
-					const dateIndex = index;
 					let removeFromArrayIndexes = [];
 
 					// Throw out the currencies we don't need
@@ -215,45 +235,38 @@ let exposed = new class {
 						}
 					});
 
-					for (let i = removeFromArrayIndexes.length -1; i >= 0; i--){
-					   item.currencies.splice(removeFromArrayIndexes[i],1);
+					for (let i = removeFromArrayIndexes.length - 1; i >= 0; i--){
+						item.currencies.splice(removeFromArrayIndexes[i], 1);
 					}
 				});
 
 			// Call a render
-			const graphHistorySelected = {
-				lineArray : historicCurrencyListSelected,
-				elements : {
-					axes : {
-						y : [
-							'chartHistorySelected__yAxis0',
-						]
+				const graphHistorySelected = {
+					lineArray : historicCurrencyListSelected,
+					lineColours : {
+						state : this.state.historicCurrencyListSelectedColours,
+						stateKey : 'historicCurrencyListSelectedColours'
 					},
-					chart : '#chartHistorySelected',
-					smoothing : 'chartHistorySelected__smoother',
-					legend : {
-						container : 'chartHistorySelected__legendContainer',
-						legend : 'chartHistorySelected__legend'
+					elements : {
+						axes : {
+							y : [
+								'chartHistorySelected__yAxis0'
+							]
+						},
+						chart : '#chartHistorySelected',
+						smoothing : 'chartHistorySelected__smoother',
+						legend : {
+							container : 'chartHistorySelected__legendContainer',
+							legend : 'chartHistorySelected__legend'
+						},
+						slider : 'chartHistorySelected__slider'
 					},
-					slider : 'chartHistorySelected__slider'
-				},
-				attributes : {
-					height : 300,
-					clearPrevious : true
-				}
-			};
+					attributes : {
+						height : 300
+					}
+				};
 
-			helpers.render.graph(graphHistorySelected);
-
-	}
-
-	keyUp(name, e) {
-		if (e.key === 'Enter') {
-			// Prevent enter key, Formous doesn't seem to like the enter key
-			e.preventDefault();
-		} else {
-			// for fix scroll send event to state if it's the one for he one I want to prevent default of?
-		}
+				communicator.drawGraphAndAddListeners(this, graphHistorySelected);
 	}
 };
 

@@ -10,3 +10,4 @@
 19/11/2016 - 0.1.0: Fixed selected currencies y scale mismatch, increased numbers after comma for hover. Gave more space to currencies with smaller values on history all chart.
 19/11/2016 - 0.1.1: Merged all y scale annotations for historic chart of all currencies into 1 scale, easier to maintain and looks much better
 19/11/2016 - 0.1.2: Some styling for the dropdown and fixed CSS class naming
+20/11/2016 - 0.1.3: Wrote logic to redraw the historic currencies on click legend item, now also checks if chart already exists and redraws if needed. Cleaned up code comments. Colours are now retained on redraw. Fixed up documentation a litle. Added screenshot

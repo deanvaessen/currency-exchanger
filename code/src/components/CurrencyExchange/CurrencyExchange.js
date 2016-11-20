@@ -44,15 +44,15 @@ class CurrencyExchange extends React.Component {
 		super(props);
 		// Handlers
 			this.handleSubmit = handle.submit.bind(this);
-			this.handleKeyUp = handle.keyUp.bind(this);
 			this.mutateComponent = this.mutateComponent.bind(this);
 			this.onChangeDropdown = handle.onChangeDropdown.bind(this);
 			this.changeCurrencyAmount = handle.changeCurrencyAmount.bind(this);
 			this.mapCurrencies = this.mapCurrencies.bind(this);
 			this.mockEvent = componentFunctions.handle.mockEvent.bind(this);
+			//this.drawGraphAndAddListeners = componentFunctions.communicate.drawGraphAndAddListeners.bind(this);
 
 		// Interaction
-		this.stopScroll = helpers.interact.disableScrollingTimer;
+			//this.stopScroll = helpers.interact.disableScrollingTimer;
 
 		// Vars
 		this.shouldHideWrittenOutcome = true;
@@ -65,10 +65,13 @@ class CurrencyExchange extends React.Component {
 			currentCurrencyList : [],
 			currencyHasChanged : true,
 			historicCurrencyListAll : [],
+			historicCurrencyListAllColours : {},
 			historicCurrencyListSelected : [],
+			historicCurrencyListSelectedColours : {},
 			resultCurrencyExchangeA : '',
 			resultCurrencyExchangeB : '',
 			shouldHideWrittenOutcome : true,
+			FilteredCurrenciesHistoricChartAll : [],
 			result : {
 				leadingCurrency : '',
 				leadingCurrencyValue : '',
@@ -96,40 +99,49 @@ class CurrencyExchange extends React.Component {
 						this.setState({historicCurrencyListAll : historicCurrencyListAll});
 						this.setState({historicCurrencyListSelected : historicCurrencyListSelected});
 
-						//console.log(historicCurrencyListSelected);
-
 						/**
 						 * { Historic graph, all currencies }
 						 * Call the draw for the history graph of all currencies
 						*/
-						const graphHistoryAll = {
-							lineArray : historicCurrencyListAll,
-							elements : {
-								axes : {
-									y : [
-										'chartHistoryAll__yAxis0',
-										'chartHistoryAll__yAxis1',
-										'chartHistoryAll__yAxis2',
-										'chartHistoryAll__yAxis3',
-										'chartHistoryAll__yAxis4',
-										'chartHistoryAll__yAxis5'
-									]
+						// Object
+							const graphHistoryAll = {
+								lineArray : historicCurrencyListAll,
+								lineColours : {
+									state : this.state.historicCurrencyListAllColours,
+									stateKey : 'historicCurrencyListAllColours'
 								},
-								chart : '#chartHistoryAll',
-								smoothing : 'chartHistoryAll__smoother',
-								legend : {
-									container : 'chartHistoryAll__legendContainer',
-									legend : 'chartHistoryAll__legend'
+								currencyFilterLocation : 'FilteredCurrenciesHistoricChartAll',
+								elements : {
+									axes : {
+										y : [
+											'chartHistoryAll__yAxis0',
+											'chartHistoryAll__yAxis1',
+											'chartHistoryAll__yAxis2',
+											'chartHistoryAll__yAxis3',
+											'chartHistoryAll__yAxis4',
+											'chartHistoryAll__yAxis5'
+										]
+									},
+									chart : '#chartHistoryAll',
+									smoothing : 'chartHistoryAll__smoother',
+									legend : {
+										container : 'chartHistoryAll__legendContainer',
+										legend : 'chartHistoryAll__legend'
+									},
+									slider : 'chartHistoryAll__slider',
+									scales : {
+										scaleItems : {
+											//
+										}
+									}
 								},
-								slider : 'chartHistoryAll__slider'
-							},
-							attributes : {
-								height : 1100,
-								clearPrevious : false
-							}
-						};
+								attributes : {
+									height : 1100
+								}
+							};
 
-					helpers.render.graph(graphHistoryAll);
+					// Call
+					componentFunctions.communicate.drawGraphAndAddListeners(this, graphHistoryAll);
 				});
 			});
 	}
@@ -183,7 +195,7 @@ class CurrencyExchange extends React.Component {
 			<div className="CurrencyExchange__title"><h1>Exchange me, please</h1></div>
 			<div className="CurrencyExchange__innerContainer">
 
-				<form onSubmit={formSubmit(this.handleSubmit, event)}>
+				<form>
 					<div className="CurrencyExchange__form">
 						<div className="CurrencyExchange__input">
 							<div className="CurrencyExchange__logMessage" >
@@ -195,19 +207,18 @@ class CurrencyExchange extends React.Component {
 									<div className="CurrencyExchange__CurrencyA">
 										<div className="CurrencyExchange__optionsContainer">
 											<div className="CurrencyExchange__currencyOption">
-
-												<span className="currencySelect currencySelect--grey">
-													<select
-														value={this.state.selectCurrencyA}
-														onChange={this.onChangeDropdown.bind(this, 'selectCurrencyA')}
-														onMouseUp={formSubmit(this.handleSubmit)}
-														className="currencySelect__select currencySelect__select--grey"
-													>
-														{this.state.currentCurrencyList.map(this.mapCurrencies)}
-													</select>
-												</span>
-
 												<div className="CurrencyExchange__currencyAmount">
+													<span className="currencySelect currencySelect--grey">
+														<select
+															value={this.state.selectCurrencyA}
+															onChange={this.onChangeDropdown.bind(this, 'selectCurrencyA')}
+															onMouseUp={formSubmit(this.handleSubmit)}
+															className="currencySelect__select currencySelect__select--grey"
+														>
+															{this.state.currentCurrencyList.map(this.mapCurrencies)}
+														</select>
+													</span>
+
 													<input
 														placeholder="How much?"
 														type="text"
@@ -226,8 +237,8 @@ class CurrencyExchange extends React.Component {
 															this.setState({ currencyHasChanged : true});
 															this.mockEvent(leadingRecorder, 'input');
 
-															//event.preventDefault();
-															//this.changeCurrencyAmount('currencyA', 'valueCurrencyA');
+																//event.preventDefault();
+																//this.changeCurrencyAmount('currencyA', 'valueCurrencyA');
 														}}
 														onKeyUp={formSubmit(this.handleSubmit)}
 														{ ...currencyA.events }
@@ -243,7 +254,7 @@ class CurrencyExchange extends React.Component {
 									<span className="arrow"></span>
 										<div className="CurrencyExchange__optionsContainer">
 											<div className="CurrencyExchange__currencyOption">
-
+												<div className="CurrencyExchange__currencyAmount">
 													<span className="currencySelect currencySelect--grey">
 														<select
 															value={this.state.selectCurrencyB}
@@ -255,7 +266,6 @@ class CurrencyExchange extends React.Component {
 														</select>
 													</span>
 
-												<div className="CurrencyExchange__currencyAmount">
 													<input
 														placeholder="How much?"
 														type="text"
@@ -263,6 +273,7 @@ class CurrencyExchange extends React.Component {
 														className="CurrencyExchange__inputCurrencyAmountB"
 														value={currencyB.value}
 														onKeyDown={(event) => {
+															console.log(event);
 															this.setState({leadingCurrency : 'valueCurrencyB'});
 
 															// Mock an event so that formous knows which the leadingCurrency is
@@ -272,6 +283,8 @@ class CurrencyExchange extends React.Component {
 															leadingRecorder.value = 'currencyB';
 															this.setState({ currencyHasChanged : true});
 															this.mockEvent(leadingRecorder, 'input');
+
+															console.log(formSubmit());
 
 														}}
 														onKeyUp={

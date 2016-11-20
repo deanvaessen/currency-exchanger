@@ -42,6 +42,10 @@ const index = (function () {
 
 				exchange : (input, callback) => {
 					return communicator.exchange(input, callback);
+				},
+
+				drawGraphAndAddListeners : (self, graph, originalGraph) => {
+					return communicator.drawGraphAndAddListeners(self, graph, originalGraph);
 				}
 
 			};

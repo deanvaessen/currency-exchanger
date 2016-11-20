@@ -187,6 +187,7 @@
 
 				.CurrencyExchange__currencyAmount {
 					display: inline-block;
+					text-align: center;
 					//@include rem(margin, 0 20px);
 
 					p {
@@ -229,7 +230,7 @@
 					input {
 						box-shadow: none;
 						margin: 0 auto;
-						display: block;
+						//display: block;
 						width: auto;
 					}
 			}
