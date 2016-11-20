@@ -19,14 +19,14 @@
 	/* Graph */
 		#chartHistorySelected {
 			width: 95%;
-			@include rem(margin, 0 0 120px 22px);
+			@include rem(margin, 0 0 120px 0);
 		}
 
 		#chartHistorySelected__yAxis0 {
 			position: absolute;
-			width: 40px;
+			width: 50px;
 			bottom: 0;
-			left: 98%;
+			left: 95%;
 			height: 300px;
 			overflow: visible;
 

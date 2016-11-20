@@ -338,11 +338,10 @@ import $ from 'jquery';
 							else if (yTickValue == 1.0)   { return '3.8' }
 							else if (yTickValue == 0.8)   { return '1.97' }
 							else if (yTickValue == 0.6)   { return '1.65' }
-							else if (yTickValue == 0.2)   { return '0.87' }
+							else if (yTickValue == 0.2)   { return '0.9' }
 							else if (yTickValue == 0)   { return '0' }
 						},
-						orientation : 'left',
-						//height : hasSingleScale ? chartHeight : 400
+						orientation : 'left'
 				});
 			}
 

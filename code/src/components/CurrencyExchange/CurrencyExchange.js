@@ -187,31 +187,32 @@ class CurrencyExchange extends React.Component {
 					<div className="CurrencyExchange__form">
 						<div className="CurrencyExchange__input">
 							<div className="CurrencyExchange__logMessage" >
-								<h4 className="header">Select a currency and input a value</h4>
+								<h4 className="header">Select a currency and input an amount</h4>
 
 								<br />
 
-								<div className="CurrencyExchange__LevelAndOutput">
-									<div className="CurrencyExchange__logLevel">
-										<h4 className="header">Currency A</h4>
+								<div className="CurrencyExchange__CurrencyAAndB">
+									<div className="CurrencyExchange__CurrencyA">
 										<div className="CurrencyExchange__optionsContainer">
 											<div className="CurrencyExchange__currencyOption">
-												<div className="CurrencyExchange__valueDropDown">
+
+												<span className="currencySelect currencySelect--grey">
 													<select
 														value={this.state.selectCurrencyA}
 														onChange={this.onChangeDropdown.bind(this, 'selectCurrencyA')}
 														onMouseUp={formSubmit(this.handleSubmit)}
+														className="currencySelect__select currencySelect__select--grey"
 													>
 														{this.state.currentCurrencyList.map(this.mapCurrencies)}
 													</select>
-												</div>
+												</span>
 
 												<div className="CurrencyExchange__currencyAmount">
 													<input
 														placeholder="How much?"
 														type="text"
-														ref="CurrencyExchange__inputLogMessage"
-														className="CurrencyExchange__inputLogMessage"
+														ref="CurrencyExchange__inputCurrencyAmountA"
+														className="CurrencyExchange__inputCurrencyAmountA"
 														value={currencyA.value}
 														onKeyDown={(event) => {
 
@@ -238,27 +239,28 @@ class CurrencyExchange extends React.Component {
 										</div>
 									</div>
 
-									<div className="CurrencyExchange__logOutput">
+									<div className="CurrencyExchange__CurrencyB">
 									<span className="arrow"></span>
-										<h4 className="header">Currency B</h4>
 										<div className="CurrencyExchange__optionsContainer">
 											<div className="CurrencyExchange__currencyOption">
-												<div className="CurrencyExchange__valueDropDown">
-													<select
-														value={this.state.selectCurrencyB}
-														onChange={this.onChangeDropdown.bind(this, 'selectCurrencyB')}
-														onMouseUp={formSubmit(this.handleSubmit)}
-													>
-														{this.state.currentCurrencyList.map(this.mapCurrencies)}
-													</select>
-												</div>
+
+													<span className="currencySelect currencySelect--grey">
+														<select
+															value={this.state.selectCurrencyB}
+															onChange={this.onChangeDropdown.bind(this, 'selectCurrencyB')}
+															onMouseUp={formSubmit(this.handleSubmit)}
+															className="currencySelect__select currencySelect__select--grey"
+														>
+															{this.state.currentCurrencyList.map(this.mapCurrencies)}
+														</select>
+													</span>
 
 												<div className="CurrencyExchange__currencyAmount">
 													<input
 														placeholder="How much?"
 														type="text"
-														ref="CurrencyExchange__inputLogMessage"
-														className="CurrencyExchange__inputLogMessage"
+														ref="CurrencyExchange__inputCurrencyAmountB"
+														className="CurrencyExchange__inputCurrencyAmountB"
 														value={currencyB.value}
 														onKeyDown={(event) => {
 															this.setState({leadingCurrency : 'valueCurrencyB'});
@@ -302,7 +304,7 @@ class CurrencyExchange extends React.Component {
 								</h4>
 								<br />
 
-								<div className='CurrencyExchange__outputResultCurrencyExchange'>
+								<div className='CurrencyExchange__outputResultCurrencyExchangeConversion'>
 									<p className="indent">
 										{this.state.result.leadingCurrencyAmount} {this.state.result.leadingCurrency}
 										&nbsp;
@@ -316,15 +318,15 @@ class CurrencyExchange extends React.Component {
 							<div className='CurrencyExchange__resultCurrencyExchange'>
 
 								<div className={this.shouldHideWrittenOutcome ? 'hidden' :
-								'CurrencyExchange__outputResultCurrencyExchange'}>
+								'CurrencyExchange__outputResultCurrencyExchangeGraph'}>
 									<h4>
 										{
 											this.state.result.followingCurrency === this.state.result.leadingCurrency ?
 												'Historic exchange rate of the' + ' ' + this.state.result.followingCurrency
-												+ ' ' + 'against the' + ' ' + 'Euro'
+												+ ' ' + 'against the' + ' ' + 'Euro:'
 												:
 												'Historic exchange rate of the' + ' ' + this.state.result.followingCurrency
-												+ ' ' + 'against the' + ' ' + this.state.result.leadingCurrency
+												+ ' ' + 'against the' + ' ' + this.state.result.leadingCurrency + ':'
 										}
 									</h4>
 
@@ -339,9 +341,9 @@ class CurrencyExchange extends React.Component {
 									</div>
 								</div>
 
-								<div className='CurrencyExchange__outputResultCurrencyExchange'>
+								<div className='CurrencyExchange__outputResultCurrencyExchangeGraph'>
 									<h4>
-										Historical exchange rates of all currencies against the Euro
+										Historical exchange rates of all currencies against the Euro:
 									</h4>
 
 									<div id="CurrencyExchange__historyChartAll" className="CurrencyExchange__resultbox indent">

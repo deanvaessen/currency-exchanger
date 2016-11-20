@@ -17,8 +17,8 @@
 
 	/* Graph */
 		#chartHistoryAll {
-			width: 93%;
-			@include rem(margin, 0 0 120px 27px);
+			width: 95%;
+			@include rem(margin, 0 0 120px 0);
 		}
 
 		#chartHistoryAll__yAxis5, #chartHistoryAll__yAxis4, #chartHistoryAll__yAxis3, #chartHistoryAll__yAxis2, #chartHistoryAll__yAxis1 {
@@ -29,7 +29,7 @@
 			position: absolute;
 			width: 50px;
 			bottom : 0;
-			left: 97%;
+			left: 95%;
 			height: 103%;
 			//height: 340px;
 
@@ -37,7 +37,6 @@
 				top: auto !important; // overwrite rickshaw itself
 				position: absolute !important;
 				bottom: -35px;
-				//height: 1215px;
 				overflow: visible;
 			}
 		}
