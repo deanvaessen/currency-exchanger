@@ -25,3 +25,7 @@
 * IE does not register the first input properly, meaning input '222' becomes '22'.
 * Firefox does not have the above issue, but does not submit automatically properly on the selection of a new currency. Upon re-clicking the currency list, or inputting a number, all is well again.
 
+<br />
+<br />
+
+Lesson learned: test browser compatibilty more often and earlier for each major feature.
