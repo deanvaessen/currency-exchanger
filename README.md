@@ -24,8 +24,6 @@
 * In connection with the above, IE and Firefox do not seem to completely like how form submission is done. To counter the issue above of not being able to put the form submition into the same react event (like "onChange") I had to seperate them out into things like formSubmition() on onKeyUp, custom events on onKeyDown. This works fine in Chrome, IE and Firefox do not like this I think. Leads to the below:
 * IE does not register the first input properly, meaning input '222' becomes '22'.
 * Firefox does not have the above issue, but does not submit automatically properly on the selection of a new currency. Upon re-clicking the currency list, or inputting a number, all is well again.
-
 <br />
 <br />
-
 Lesson learned: test browser compatibilty more often and earlier for each major feature.
