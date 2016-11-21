@@ -1,17 +1,21 @@
 'use strict';
 
+require('babel-polyfill');
+//require('custom-event-polyfill');
 let path = require('path');
 let webpack = require('webpack');
 let baseConfig = require('./base');
 let defaultSettings = require('./defaults');
-
 require('jquery');
+
+
 
 // Add needed plugins here
 let BowerWebpackPlugin = require('bower-webpack-plugin');
 
 let config = Object.assign({}, baseConfig, {
   entry: [
+    'babel-polyfill',
     'webpack-dev-server/client?http://127.0.0.1:' + defaultSettings.port,
     'webpack/hot/only-dev-server',
     './src/index'

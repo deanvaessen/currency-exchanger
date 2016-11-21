@@ -1,0 +1,20 @@
+/* ==========================================================================
+   IE9 'polyfill'
+   ========================================================================== */
+
+   /**
+    * { Dependencies }
+    */
+   	// Shared styling
+   	@import './../../index.scss';
+
+
+   // Hide arrow fallback for IE9 (ugh...)
+   .currencySelect:before,
+   .currencySelect:after {
+	display: none;
+   }
+
+   .currencySelect__select{
+   	@include rem(padding, 8px 10px 8px 10px !important);
+   }

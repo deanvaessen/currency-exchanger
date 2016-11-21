@@ -1,4 +1,5 @@
 'use strict';
+require('babel-polyfill');
 let path = require('path');
 let defaultSettings = require('./defaults');
 

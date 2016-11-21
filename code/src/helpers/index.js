@@ -14,6 +14,7 @@ import ExchangeHelpers from './functions/exchange';
 import RenderHelpers from './functions/render';
 import GenerationHelpers from './functions/generator';
 import InteractionHelpers from './functions/interaction';
+import PolyFillHelpers from './functions/polyfill';
 
 /**
 * { Function }
@@ -114,6 +115,12 @@ const index = (function () {
 				}
 			};
 
+			const polyfill = {
+				customEvents : function (input){
+					return PolyFillHelpers.customEvents(input);
+				}
+			};
+
 			return {
 				mutate : mutate,
 				validate : validate,
@@ -122,7 +129,8 @@ const index = (function () {
 				exchange : exchange,
 				render : render,
 				generate : generate,
-				interact : interact
+				interact : interact,
+				polyfill : polyfill
 			};
 })();
 

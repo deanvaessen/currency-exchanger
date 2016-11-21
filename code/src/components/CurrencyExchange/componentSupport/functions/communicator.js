@@ -21,7 +21,7 @@ import helpers from './../../../../helpers/index';
 let exposed = new class {
 
 	getCurrenciesAndRates(callback){
-		helpers.communicate.ajax.get('https://crossorigin.me/http://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml', result => {
+		helpers.communicate.ajax.get('http://localhost:8001/getCurrenciesAndRates', result => {
 			callback(helpers.convert.xml.toJSON(result));
 		});
 	}

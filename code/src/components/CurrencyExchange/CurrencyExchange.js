@@ -82,6 +82,20 @@ class CurrencyExchange extends React.Component {
 	}
 
 	componentWillMount() {
+		// Run some polyfills
+		helpers.polyfill.customEvents();
+
+		// Check for IE9 and add a CSS fix for the selection dropdown
+			// (cannot hide the dropdown button in IE9 but can hide my custom one to keep things from falling apart)
+		function IE(v) {
+			return RegExp('msie' + (!isNaN(v) ? ('\\s' + v) : ''), 'i').test(navigator.userAgent);
+		}
+
+		if (IE(9)) {
+			require('./../../stylesupport/partials/polyfill/ie9.scss');
+		};
+
+
 		// Get all the curencies and rates and process them, then draw the history map also
 		// This could be a bit cleaner with a promise chain
 			//Get rates
@@ -209,14 +223,14 @@ class CurrencyExchange extends React.Component {
 											<div className="CurrencyExchange__currencyOption">
 												<div className="CurrencyExchange__currencyAmount">
 													<span className="currencySelect currencySelect--grey">
-														<select
-															value={this.state.selectCurrencyA}
-															onChange={this.onChangeDropdown.bind(this, 'selectCurrencyA')}
-															onMouseUp={formSubmit(this.handleSubmit)}
-															className="currencySelect__select currencySelect__select--grey"
-														>
-															{this.state.currentCurrencyList.map(this.mapCurrencies)}
-														</select>
+															<select
+																value={this.state.selectCurrencyA}
+																onChange={this.onChangeDropdown.bind(this, 'selectCurrencyA')}
+																onMouseUp={formSubmit(this.handleSubmit)}
+																className="currencySelect__select currencySelect__select--grey"
+															>
+																{this.state.currentCurrencyList.map(this.mapCurrencies)}
+															</select>
 													</span>
 
 													<input
@@ -284,7 +298,7 @@ class CurrencyExchange extends React.Component {
 															this.setState({ currencyHasChanged : true});
 															this.mockEvent(leadingRecorder, 'input');
 
-															console.log(formSubmit());
+															//console.log(formSubmit());
 
 														}}
 														onKeyUp={

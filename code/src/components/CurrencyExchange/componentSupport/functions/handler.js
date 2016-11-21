@@ -34,7 +34,7 @@ let exposed = new class {
 	* E.g: to trigger an input
 	*/
 	mockEvent(obj, event) {
-		const mockedEvent = new Event(event, {target : obj, bubbles : true});
+		const mockedEvent = new CustomEvent(event, {target : obj, bubbles : true});
 
 		return obj ? obj.dispatchEvent(mockedEvent) : false;
 	}

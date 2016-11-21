@@ -76,6 +76,12 @@
 					display: inline-block;
 					@include rem(margin, 0 20px);
 
+					.currencySelect__wrapperFallback {
+						position:relative;
+						display:inline-block;
+						z-index:0
+					}
+
 					.currencySelect--large {
 						font-size: 1.5em;
 					}
@@ -91,97 +97,80 @@
 						margin: 0; /* remove default margins */
 					}
 
-					.currencySelect__select--white {
-						background-color: #fff;
-						color: #444;
-					}
-
 					.currencySelect__select--grey {
 						background-color: #F6F6F6;
 						border: 2px solid #EBE9E9;
 						color: #444;
 					}
 
+					.currencySelect {
+						position: relative;
+						display: inline-block;
+						vertical-align: middle;
+						@include rem(margin, 0 10px 3px 0);
+					}
 
-					@supports (pointer-events: none) and
-						  ((-webkit-appearance: none) or
-						  (-moz-appearance: none) or
-						  (appearance: none)) {
-
-						.currencySelect {
-							position: relative;
-							display: inline-block;
-							vertical-align: middle;
-							@include rem(margin, 0 10px 3px 0);
-						}
-
-
-						.currencySelect__select {
-							//padding-right: 2.5em; /* accommodate with the pseudo elements for the dropdown arrow */
-							//border: 0;
-							border-radius: 3px;
-							-webkit-appearance: none;
-							-moz-appearance: none;
-							appearance: none;
-						}
+					.currencySelect__select {
+						border-radius: 3px;
+						-webkit-appearance: none;
+						-moz-appearance: none;
+						appearance: none;
+					}
 
 
-						.currencySelect::before,
-						.currencySelect::after {
-							content: "";
-							position: absolute;
-							pointer-events: none;
-						}
+					.currencySelect:before,
+					.currencySelect:after {
+						content: "";
+						position: absolute;
+						pointer-events: none;
+					}
 
-						.currencySelect::after { /*  Custom dropdown arrow */
-							content: "\25BC";
-							height: 1em;
-							font-size: .625em;
-							line-height: 1;
-							right: 1.2em;
-							top: 50%; margin-top: -.5em;
-						}
+					.currencySelect:after { /*  Custom dropdown arrow */
+						content: "\25BC";
+						height: 1em;
+						font-size: .625em;
+						line-height: 1;
+						right: 1.2em;
+						top: 50%; margin-top: -.5em;
+					}
 
-						.currencySelect::before { /*  Custom dropdown arrow cover */
-							width: 2em;
-							right: 0; top: 0; bottom: 0;
-							border-radius: 0 3px 3px 0;
-						}
+					.currencySelect:before { /*  Custom dropdown arrow cover */
+						width: 2em;
+						right: 0; top: 0; bottom: 0;
+						border-radius: 0 3px 3px 0;
+					}
 
-						.currencySelect__select[disabled] {
-							color: rgba(0,0,0,.3);
-						}
+					.currencySelect__select[disabled] {
+						color: rgba(0,0,0,.3);
+					}
 
-						.currencySelect.currencySelect--disabled::after {
-							color: rgba(0,0,0,.1);
-						}
+					.currencySelect.currencySelect--disabled::after {
+						color: rgba(0,0,0,.1);
+					}
 
-						/* White dropdown style */
-						.currencySelect--white::before {
-							background-color: #fff;
-							border-left: 1px solid rgba(0,0,0,.1);
-						}
+					/* White dropdown style */
+					.currencySelect--white:before {
+						background-color: #fff;
+						border-left: 1px solid rgba(0,0,0,.1);
+					}
 
-						.currencySelect--white::after {
-							color: rgba(0,0,0,.9);
-						}
+					.currencySelect--white:after {
+						color: rgba(0,0,0,.9);
+					}
 
-						/* Gray dropdown style */
-						.currencySelect--grey::before {
-							background-color: grey;
-							border-left: 1px solid rgba(0,0,0,.1);
-						}
+					/* Gray dropdown style */
+					.currencySelect--grey::before {
+						background-color: grey;
+						border-left: 1px solid rgba(0,0,0,.1);
+					}
 
-						.currencySelect--grey::after {
-							color: $rgb-currencyexchanger-orange--light;
-						}
+					.currencySelect--grey::after {
+						color: $rgb-currencyexchanger-orange--light;
+					}
 
-						/* FF only temp fix */
-						@-moz-document url-prefix() {
-							.currencySelect__select 			 { padding-right: .9em }
-							.currencySelect--large .currencySelect__select { padding-right: 1.3em }
-							.currencySelect--small .currencySelect__select { padding-right: .5em }
-						}
+					// IE10 fix
+					select::-ms-expand {
+						display: none;
 					}
 				}
 

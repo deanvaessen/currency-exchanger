@@ -5,7 +5,7 @@
  * the base array output.
  */
 'use strict';
-
+//require('babel-polyfill');
 const path = require('path');
 const srcPath = path.join(__dirname, '/../src');
 const dfltPort = 8000;
