@@ -21,4 +21,4 @@
 * As a workaround for the above if you want to test the disabling/enabling of currencies on the Historical Exchange Rate, input an amount first. This stops the jumping for that part of the page.
 <br />
 <br />
-* IE didplays a 'symbols' error on runtime. This appears to be a Babel issue. I tried adding a polyfill but it's apparently quite adamant that it doesn't want to work. I'll fix this tonight. 
+* IE displays a 'symbols' error on runtime. This appears to be a Babel issue. I tried adding a polyfill, as well as a runtime transform, but it's apparently quite adamant that it doesn't want to work. I'll fix this tonight. 
